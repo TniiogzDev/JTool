@@ -1,0 +1,40 @@
+<!DOCTYPE html> <!-- Ayuda al navegador a interpretar el documento como HTML5 -->
+<html lang="es"> <!-- El atributo lang especifica el idioma del contenido -->
+<head> <!-- El elemento <head> contiene metadatos, enlaces a estilos, scripts y configuraciones que no se muestran directamente en la página, pero son esenciales para su funcionamiento y presentación. -->
+    <meta charset="UTF-8"> <!-- Define la codificación de caracteres para el documento, asegurando que se muestren correctamente los caracteres especiales y acentos. -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Hace que el diseño sea responsivo, ajustándose al ancho del dispositivo -->
+    <title>Inicio</title> <!-- Título de la página que aparece en la pestaña del navegador -->
+     <script src="https://cdn.tailwindcss.com"></script> <!-- Importa Tailwind CSS desde un CDN para utilizar sus clases de estilo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"> <!-- Preconecta al servidor de Google Fonts para mejorar la velocidad de carga -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <!-- Preconecta al servidor de Google Fonts con soporte para CORS -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet"> <!-- Importa la fuente Noto Sans desde Google Fonts -->
+        <style> /* Estilos personalizados */
+        body {
+            font-family: 'Noto Sans', sans-serif; /* Fuente principal */
+            background-color: #f0f1f1; /* Background del sitio */
+        }
+        </style>
+</head>
+<body class="p-4 sm:p-8"> <!-- Contenedor principal con padding responsivo -->
+    <div class="flex flex-col items-right justify-start min-h-screen"> <!-- Contenedor principal con flexbox para centrar el contenido verticalmente -->
+        <div class="flex items-center gap-4 mb-2"> <!-- Contenedor del logo y título con espacio entre ellos -->
+                <img src="Imagenes/Jtool_Logo.png" alt="Logo JTool logo" class="h-14 w-14 object-contain"> <!-- Logo con tamaño fijo y ajuste de imagen -->
+            <h1 class="text-2xl font-bold"><FONT FACE="courier">| JTool</FONT>
+</h1> <!-- Título principal con tamaño y peso de fuente -->
+            <br> <!-- Salto de línea para separar el título del contenido siguiente -->
+        </div>
+        <p class="mb-4">Aquí encontrarás herramientas para ayudarte a generar horarios en diferentes áreas.</p> <!-- Descripción introductoria -->
+        <div class="bg-[#ffffff] p-6 rounded-xl mb-25"> <!-- Contenedor de la tarjeta con fondo blanco, padding, bordes redondeados y sombra -->
+                <div class="flex justify-center"> <!-- Contenedor interno con flexbox para centrar el contenido -->
+                <a href="Horarios.html" class="bg-[#4b6da6] text-white px-4 py-2 rounded inline-block">Generador Horario Multimedia</a> <!-- Botón con estilos personalizados -->
+                </div> 
+        </div>
+    </div>
+</body>
+</html>
+
+
+<!-- DEFINICIONES -->
+    <!-- CDN = Red de entrega de contenido, un sistema de servidores distribuidos que entrega contenido web a los usuarios de manera más rápida y eficiente. -->
+    <!-- CORS = Cross-Origin Resource Sharing, un mecanismo que permite a los recursos restringidos en una página web ser solicitados desde otro dominio distinto al que sirvió el recurso inicial. -->
+    <!-- Flexbox = Un modelo de diseño en CSS que permite distribuir espacio entre los elementos de una interfaz y alinear contenido de manera predecible, incluso cuando su tamaño es desconocido o dinámico. -->
