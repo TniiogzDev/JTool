@@ -282,7 +282,7 @@
             exportExcelBtn.addEventListener('click', () => {
                 const scheduleTable = scheduleContainer.querySelector('table');
                 if (scheduleTable) {
-                    const ws = XLSX.utils.table_to_sheet(scheduleTable);
+                    const ws = XLSX.utils.table_to_sheet(scheduleTable, { cellDates: false, raw: true });
                     const wb = XLSX.utils.book_new();
                     XLSX.utils.book_append_sheet(wb, ws, "Horario");
                     const title = scheduleTitleEl.value.trim() || 'horario_generado';
