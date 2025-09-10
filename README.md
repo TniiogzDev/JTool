@@ -1,64 +1,50 @@
 # JTool
-Proyecto Web de diferentes herramientas para diferentes departamentos, a continuación explicaré la herramienta disponible hasta ahora:
-
-### Guía de Usuario para el Generador de Horarios 📅
-
-Esta herramienta te ayuda a crear un horario mensual de manera fácil y rápida, asignando personas a diferentes equipos o roles. Sigue estos pasos para generar tu horario:
+Proyecto Web de diferentes herramientas para diferentes departamentos. A continuación, se detalla la herramienta disponible hasta ahora.
 
 ---
 
-### 1. Copia de Seguridad 💾
+### Guía de Usuario para el Generador de Horarios
 
-Esta sección te permite guardar y cargar tus datos de configuración.
-
-* **Guardar Datos**: Haz clic en este botón para descargar un archivo (`.json`) con toda la información que has ingresado (equipos, miembros, restricciones). Esto es útil para **respaldar tu trabajo** o para **continuar editando** en otro momento.
-* **Cargar Datos**: Utiliza este botón para seleccionar y subir un archivo de respaldo previamente guardado. La aplicación se llenará automáticamente con tu configuración anterior.
+Esta herramienta te ayuda a crear un horario mensual de manera fácil y rápida, asignando personas a diferentes equipos o roles. Sigue estos pasos para generar tu horario.
 
 ---
 
-### 2. Definir los Días del Mes 🗓️
+### 1. Configuración de Datos
 
-Aquí defines la estructura de tu horario.
+Esta sección te permite gestionar la información principal del horario.
 
-* **Agregar Día**: Pulsa este botón para añadir una fila. En cada fila, ingresa el **nombre del día** de la semana (ej. "Miércoles") y la **fecha** del mes que le corresponde (ej. "3"). Repite este proceso para todos los días que necesites en tu horario.
+* **Definir los Días del Mes**: Aquí defines la estructura de tu horario. Utiliza el botón **"Agregar Día"** para añadir una fila donde ingresarás el **nombre del día** de la semana (ej. "Miércoles") y la **fecha** correspondiente (ej. "3"). Repite el proceso para todos los días que necesites incluir en el horario.
 
----
-
-### 3. Definir tus Equipos 🤝
-
-En esta sección, creas los equipos o roles para los que necesitas generar el horario.
-
-* **Agregar Equipo**: Haz clic para añadir un nuevo equipo.
-* **Nombre del Equipo**: Escribe el nombre del equipo o rol (ej. "Audio", "Proyección").
-* **Miembros**: En el cuadro de texto, escribe el nombre completo de cada miembro, **uno por línea**.
+* **Definir tus Equipos**: En esta parte, creas los equipos o roles para los que necesitas generar el horario. Haz clic en **"Agregar Equipo"** para añadir un nuevo equipo. Escribe el **nombre del equipo** y, en el cuadro de texto, lista a los **miembros**, escribiendo cada nombre en una línea separada.
 
 ---
 
-### 4. Restricción de Rotación 🔄
+### 2. Gestión de Restricciones
 
-Esta característica evita que ciertas personas sean asignadas a un mismo equipo más de una vez en el mes.
+Aquí puedes establecer reglas para la asignación de personas.
 
-* **Lista de Rotación**: Escribe el nombre de las personas, **uno por línea**, que solo deben ser asignadas una vez por equipo durante el mes. Por ejemplo, si una persona está en la lista y es asignada al "Equipo 1", la herramienta intentará no asignarla de nuevo a ese mismo equipo en el resto del mes.
+* **Restricción de Rotación**: Esta función evita que ciertas personas sean asignadas a un mismo equipo más de una vez en el mes. En el cuadro de texto, ingresa el nombre de las personas, **uno por línea**, que deben ser asignadas solo una vez por equipo durante el mes.
 
----
-
-### 5. Restricción de Días 🚫
-
-Aquí puedes especificar los días en los que una persona no está disponible.
-
-* **Agregar Restricción**: Haz clic en este botón para añadir una fila.
-* **Nombre Completo**: Escribe el nombre de la persona que tiene restricciones.
-* **Días que no puede**: Ingresa los números de los días del mes en los que esa persona no está disponible, separados por comas (ej. "3, 10, 17"). La aplicación se asegurará de no asignarla en esas fechas.
+* **Restricción de Días**: Te permite especificar los días en los que una persona no está disponible. Usa el botón **"Agregar Restricción"** para añadir una fila. Escribe el **nombre completo** de la persona y, en el campo correspondiente, ingresa los números de los días del mes en que no puede ser asignada, separados por comas (ej. "3, 10, 17").
 
 ---
 
-### 6. Generar y Exportar Horario ✅
+### 3. Generar y Exportar Horario
 
-Este es el último paso para ver y guardar tu horario.
+Este es el último paso para crear y guardar tu horario.
 
-* **Título del Horario**: Puedes poner un nombre a tu horario, como "Horario de Julio". Este título aparecerá en la tabla generada.
-* **Generar Horario**: Una vez que hayas ingresado todos los datos, haz clic aquí. El horario aparecerá como una tabla debajo de los botones.
-* **Exportar a PDF**: Convierte el horario generado en un archivo PDF que puedes imprimir o compartir fácilmente.
-* **Exportar a Excel**: Descarga el horario en un archivo de Excel (`.xlsx`) para que puedas editarlo o guardarlo como una hoja de cálculo.
+* **Generar Horario**: Una vez que hayas ingresado todos los datos y restricciones, puedes asignar un **título al horario**. Luego, haz clic en **"Generar Horario"** para que la tabla del horario aparezca en la página.
 
+* **Exportar Horario**: La herramienta ofrece dos opciones para guardar tu trabajo:
+    * **Exportar a PDF**: Convierte el horario en un documento PDF para imprimir o compartir fácilmente.
+    * **Exportar a Excel**: Descarga el horario como un archivo de Excel (`.xlsx`) para que puedas editarlo en una hoja de cálculo.
+
+---
+
+### 4. Copia de Seguridad
+
+Esta sección te permite guardar y cargar la configuración de tu trabajo para usarla en el futuro.
+
+* **Guardar Datos**: Descarga un archivo (`.json`) con toda la configuración que has ingresado (equipos, miembros, restricciones, días).
+* **Cargar Datos**: Carga un archivo de respaldo previamente guardado para restaurar tu configuración.
 
