@@ -47,4 +47,5 @@ Esta sección te permite guardar y cargar la configuración de tu trabajo para u
 
 * **Guardar Datos**: Descarga un archivo (`.json`) con toda la configuración que has ingresado (equipos, miembros, restricciones, días).
 * **Cargar Datos**: Carga un archivo de respaldo previamente guardado para restaurar tu configuración.
-
+---
+Nota: Esta herramienta puede contener errores,si encuentran un error no dude en avisar aquí • `antoniogomez.gomlet@gmail.com`
