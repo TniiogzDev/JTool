@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Generador de Horarios</title>
-    <!-- Incluir Tailwind CSS para un diseño moderno y responsivo -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,7 +27,6 @@
         </p>
         <a href="index.html" class="bg-[#4b6da6] text-white px-2 py-2 rounded inline-block mb-4">Inicio</a>
 
-        <!-- Botones de Copia de Seguridad -->
         <div class="bg-white p-6 rounded-xl border border-gray-200 mb-8">
             <h2 class="text-xl font-semibold text-gray-800 mb-4 text-center">Copia de Seguridad</h2>
             <div class="flex flex-col sm:flex-row justify-center gap-4">
@@ -38,7 +36,6 @@
                 <button id="load-backup-btn" class="px-6 py-3 bg-[#4b6da6] text-white font-semibold rounded-lg hover:bg-opacity-90 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm">
                     Cargar Datos
                 </button>
-                <!-- Input de archivo oculto para la carga -->
                 <input type="file" id="backup-file-input" class="hidden" accept=".json">
             </div>
             <p class="text-sm text-gray-600 mt-4 text-center">
@@ -46,43 +43,36 @@
             </p>
         </div>
 
-        <!-- Contenedor para la definición de días -->
         <div class="flex flex-col gap-6 mb-8">
             <div class="bg-white p-6 rounded-xl border border-gray-200">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">Paso 1: Define los días del mes a programar</h2>
                 <div id="days-container" class="space-y-4">
-                    <!-- Los días se añadirán dinámicamente aquí -->
-                </div>
+                    </div>
                 <button id="add-day-btn" class="mt-4 px-4 py-2 bg-[#4b6da6] text-white text-sm font-semibold rounded-lg hover:bg-opacity-90 transition duration-200">
                     Agregar Día
                 </button>
             </div>
 
-            <!-- Contenedor de equipos -->
             <div class="bg-white p-6 rounded-xl border border-gray-200">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">Paso 2: Define tus equipos</h2>
                 <div id="teams-container" class="space-y-6">
-                    <!-- Los equipos se añadirán dinámicamente aquí -->
-                </div>
+                    </div>
                 <button id="add-team-btn" class="mt-4 px-4 py-2 bg-[#4b6da6] text-white text-sm font-semibold rounded-lg hover:bg-opacity-90 transition duration-200">
                     Agregar Equipo
                 </button>
             </div>
 
-            <!-- Entrada de Restricción de Rotación -->
             <div class="bg-white p-6 rounded-xl border border-gray-200">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">Paso 3: Restricción de Rotación</h2>
                 <p class="text-sm text-gray-600 mb-2">
-                    Las personas en esta lista serán asignadas una sola vez por equipo al mes, si es posible. <br> #Nota: Esto es pensado en quienes tienen hijos y deben estar con ellos, no es necesario que se haga esta opcion. <br/>(Ejemplo: Juan, solo estara usado en Equipo 1 y una vez en Equipo 2.)
+                    Las personas en esta lista serán asignadas una sola vez por equipo al mes, si es posible. <br> (Ejemplo: Juan, solo estara usado en Equipo 1 y una vez en Equipo 2.)
                 </p>
                 <textarea id="rotation-list" rows="4" class="w-full p-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 resize-none" placeholder="Juan Pérez&#10;Mario López&#10;..."></textarea>
             </div>
             
-            <!-- Entrada de Restricciones -->
             <div class="bg-white p-6 rounded-xl border border-gray-200">
                 <h2 class="text-xl font-semibold text-gray-800 mb-4">Paso 4: Define las restricciones de días</h2>
                 <div id="restrictions-container" class="space-y-4">
-                    <!-- Las restricciones se añadirán dinámicamente aquí -->
                     <p class="text-sm text-gray-600">Haz clic en "Agregar Restricción" para añadir días no disponibles por persona.</p>
                 </div>
                 <button id="add-restriction-btn" class="mt-4 px-4 py-2 bg-[#4b6da6] text-white text-sm font-semibold rounded-lg hover:bg-opacity-90 transition duration-200">
@@ -91,7 +81,6 @@
             </div>
         </div>
         
-        <!-- Contenedor para el título del horario y los botones de exportación -->
         <div class="bg-white p-6 rounded-xl border border-gray-200 mb-8">
             <h2 class="text-xl font-semibold text-gray-800 mb-4">Paso 5: Generar y Exportar Horario</h2>
             <div class="mb-4">
@@ -111,12 +100,9 @@
             </div>
         </div>
 
-        <!-- Contenedor para mostrar el horario generado -->
         <div id="schedule-container" class="mt-8">
-            <!-- El horario se generará aquí -->
-        </div>
+            </div>
 
-        <!-- Modal de alerta -->
         <div id="alert-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
             <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
                 <div class="mt-3 text-center">
@@ -138,7 +124,6 @@
 
     </div>
 
-    <!-- Incluir librerías para exportar a PDF y a Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
@@ -441,7 +426,7 @@
             }
 
             /**
-             * Genera un horario combinado asegurando que no haya conflictos de asignación.
+             * Genera un horario combinado con carga de trabajo equitativa.
              * @param {Object[]} days - Array de objetos con el día de la semana y la fecha.
              * @param {Object[]} teams - Array de objetos con el nombre del equipo y sus miembros.
              * @param {string[]} allMembers - Lista de todos los miembros únicos del equipo.
@@ -451,69 +436,60 @@
              */
             function generateCombinedSchedule(days, teams, allMembers, restrictions, rotationMembers) {
                 const fullSchedule = {};
-                const assignments = {}; // Registro de asignaciones por miembro y equipo
-
-                teams.forEach(team => {
-                    assignments[team.name] = [];
+                const assignmentCounts = {}; // Registro de cuántas veces se ha asignado a cada miembro
+                allMembers.forEach(member => {
+                    assignmentCounts[member] = 0;
                 });
-                
+    
                 days.forEach(dayInfo => {
-                    const availableMembers = [...allMembers].filter(member => {
+                    const availableMembers = allMembers.filter(member => {
                         return !(restrictions[member] && restrictions[member].includes(dayInfo.date));
                     });
                     
-                    randomShuffle(availableMembers);
-                    
                     const dayAssignments = {};
-                    const assignedForToday = []; // Para evitar que una persona esté en dos equipos el mismo día
-
-                    teams.forEach(team => {
-                        dayAssignments[team.name] = ''; // Inicializar la asignación del equipo
-                        let assigned = false;
-
-                        // Paso 1: Intentar asignar a alguien de la lista de rotación
-                        const rotationCandidates = team.members.filter(member => 
-                            rotationMembers.includes(member) && 
+                    const assignedForToday = [];
+    
+                    // Ordenar los equipos de forma aleatoria para evitar sesgos.
+                    const shuffledTeams = [...teams];
+                    randomShuffle(shuffledTeams);
+    
+                    shuffledTeams.forEach(team => {
+                        dayAssignments[team.name] = 'Sin asignar';
+    
+                        // Filtrar candidatos disponibles:
+                        // 1. Están en el equipo.
+                        // 2. Están disponibles hoy (no restringidos, no asignados ya).
+                        const teamCandidates = team.members.filter(member =>
                             availableMembers.includes(member) &&
-                            !assignedForToday.includes(member) &&
-                            !assignments[team.name].includes(member)
+                            !assignedForToday.includes(member)
                         );
-                        
-                        randomShuffle(rotationCandidates);
-                        
-                        if (rotationCandidates.length > 0) {
-                            const selectedMember = rotationCandidates[0];
+    
+                        // Priorizar a los miembros de la lista de rotación que han sido asignados menos veces.
+                        const candidates = teamCandidates.sort((a, b) => {
+                            const isArotation = rotationMembers.includes(a);
+                            const isBrotation = rotationMembers.includes(b);
+    
+                            // Si ambos están en rotación o ninguno, ordenar por el contador de asignaciones.
+                            if (isArotation === isBrotation) {
+                                return assignmentCounts[a] - assignmentCounts[b];
+                            }
+                            
+                            // Si solo uno está en la lista de rotación, priorizar al que no está.
+                            // Esto ayuda a mantener a los de rotación como "comodines".
+                            return isArotation ? 1 : -1;
+                        });
+    
+                        if (candidates.length > 0) {
+                            const selectedMember = candidates[0];
                             dayAssignments[team.name] = selectedMember;
                             assignedForToday.push(selectedMember);
-                            assignments[team.name].push(selectedMember);
-                            assigned = true;
-                        }
-
-                        // Paso 2: Si no se pudo de la lista de rotación, buscar en el resto del equipo
-                        if (!assigned) {
-                            const otherCandidates = team.members.filter(member =>
-                                availableMembers.includes(member) &&
-                                !assignedForToday.includes(member)
-                            );
-                            
-                            randomShuffle(otherCandidates);
-                            
-                            if (otherCandidates.length > 0) {
-                                const selectedMember = otherCandidates[0];
-                                dayAssignments[team.name] = selectedMember;
-                                assignedForToday.push(selectedMember);
-                                // No se añade a la lista de asignaciones del equipo para permitir repetición
-                                assigned = true;
-                            }
-                        }
-
-                        if (!assigned) {
-                            dayAssignments[team.name] = 'Sin asignar';
+                            assignmentCounts[selectedMember]++; // ¡Incrementar el contador!
                         }
                     });
+    
                     fullSchedule[dayInfo.day + ' ' + dayInfo.date + ' Septiembre'] = dayAssignments;
                 });
-
+    
                 return fullSchedule;
             }
             
