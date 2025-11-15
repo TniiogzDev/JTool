@@ -7,121 +7,235 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Noto Sans', sans-serif;
-            background-color: #f0f1f1; /* Fondo claro */
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        .input-field {
+            transition: all 0.3s ease;
+        }
+        .input-field:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(75, 109, 166, 0.15);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
         }
     </style>
 </head>
-<body class="p-4 sm:p-8">
+<body class="min-h-screen py-8 px-4">
 
-    <div class="max-w-4xl mx-auto bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-200">
-        <img src="Imagenes/logo.png" alt="Logo LeviApp" class="h-14 w-14 object-contain">
-        <h1 class="text-3xl sm:text-4xl font-bold text-center text-gray-800 mb-2">
-            Generador de Horarios 
-        </h1>
-        <p class="text-center text-gray-600 mb-8">
-            Define tus equipos, sus miembros y las restricciones para generar un horario.
-        </p>
-        <a href="index.html" class="bg-[#4b6da6] text-white px-2 py-2 rounded inline-block mb-4">Inicio</a>
-
-        <div class="bg-white p-6 rounded-xl border border-gray-200 mb-8">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4 text-center">Copia de Seguridad</h2>
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <button id="save-backup-btn" class="px-6 py-3 bg-[#4b6da6] text-white font-semibold rounded-lg hover:bg-opacity-90 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm">
-                    Guardar Datos
-                </button>
-                <button id="load-backup-btn" class="px-6 py-3 bg-[#4b6da6] text-white font-semibold rounded-lg hover:bg-opacity-90 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 shadow-sm">
-                    Cargar Datos
-                </button>
-                <input type="file" id="backup-file-input" class="hidden" accept=".json">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header con logo -->
+        <div class="text-center mb-8 fade-in">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full shadow-lg mb-4">
+                <svg class="w-12 h-12 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
             </div>
-            <p class="text-sm text-gray-600 mt-4 text-center">
-                Esto guardará/cargará los equipos, miembros y restricciones en un archivo para que puedas editarlo o respaldarlo.
+            <h1 class="text-5xl font-bold text-white mb-3 drop-shadow-lg">
+                Generador de Horarios
+            </h1>
+            <p class="text-xl text-white/90 mb-6">
+                Organiza equipos y gestiona turnos de manera inteligente
             </p>
+            <a href="index.html" class="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-105">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Volver al inicio
+            </a>
         </div>
 
-        <div class="flex flex-col gap-6 mb-8">
-            <div class="bg-white p-6 rounded-xl border border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">Paso 1: Define los días del mes a programar</h2>
-                <div id="days-container" class="space-y-4">
+        <div class="glass-morphism rounded-3xl shadow-2xl p-8 space-y-8 fade-in">
+            
+            <!-- Sección de Backup -->
+            <div class="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-2xl border border-indigo-100">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2 flex items-center gap-3">
+                    <svg class="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+                    </svg>
+                    Copia de Seguridad
+                </h2>
+                <p class="text-sm text-gray-600 mb-4">Guarda y carga tus configuraciones</p>
+                <div class="flex flex-wrap gap-3">
+                    <button id="save-backup-btn" class="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+                        </svg>
+                        Guardar Datos
+                    </button>
+                    <button id="load-backup-btn" class="flex items-center gap-2 px-6 py-3 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-700 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                        </svg>
+                        Cargar Datos
+                    </button>
+                    <input type="file" id="backup-file-input" class="hidden" accept=".json">
+                </div>
+            </div>
+
+            <!-- Paso 1: Mes y Año -->
+            <div class="bg-white p-6 rounded-2xl border-2 border-indigo-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3">
+                    <span class="flex items-center justify-center w-8 h-8 bg-indigo-600 text-white rounded-full text-sm font-bold">1</span>
+                    Define el Mes y Año
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Mes:</label>
+                        <select id="month-select" class="w-full p-3 border-2 border-gray-200 rounded-xl input-field focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none">
+                            <option value="Enero">Enero</option>
+                            <option value="Febrero">Febrero</option>
+                            <option value="Marzo">Marzo</option>
+                            <option value="Abril">Abril</option>
+                            <option value="Mayo">Mayo</option>
+                            <option value="Junio">Junio</option>
+                            <option value="Julio">Julio</option>
+                            <option value="Agosto">Agosto</option>
+                            <option value="Septiembre">Septiembre</option>
+                            <option value="Octubre">Octubre</option>
+                            <option value="Noviembre">Noviembre</option>
+                            <option value="Diciembre">Diciembre</option>
+                        </select>
                     </div>
-                <button id="add-day-btn" class="mt-4 px-4 py-2 bg-[#4b6da6] text-white text-sm font-semibold rounded-lg hover:bg-opacity-90 transition duration-200">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Año:</label>
+                        <input type="number" id="year-input" value="2025" min="2020" max="2100" class="w-full p-3 border-2 border-gray-200 rounded-xl input-field focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paso 2: Días del mes -->
+            <div class="bg-white p-6 rounded-2xl border-2 border-indigo-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3">
+                    <span class="flex items-center justify-center w-8 h-8 bg-indigo-600 text-white rounded-full text-sm font-bold">2</span>
+                    Define los días del mes a programar
+                </h2>
+                <div id="days-container" class="space-y-3 mb-4"></div>
+                <button id="add-day-btn" class="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all duration-300 shadow-sm hover:shadow-md">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
                     Agregar Día
                 </button>
             </div>
 
-            <div class="bg-white p-6 rounded-xl border border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">Paso 2: Define tus equipos</h2>
-                <div id="teams-container" class="space-y-6">
-                    </div>
-                <button id="add-team-btn" class="mt-4 px-4 py-2 bg-[#4b6da6] text-white text-sm font-semibold rounded-lg hover:bg-opacity-90 transition duration-200">
+            <!-- Paso 3: Equipos -->
+            <div class="bg-white p-6 rounded-2xl border-2 border-indigo-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3">
+                    <span class="flex items-center justify-center w-8 h-8 bg-indigo-600 text-white rounded-full text-sm font-bold">3</span>
+                    Define tus equipos
+                </h2>
+                <div id="teams-container" class="space-y-4 mb-4"></div>
+                <button id="add-team-btn" class="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all duration-300 shadow-sm hover:shadow-md">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
                     Agregar Equipo
                 </button>
             </div>
 
-            <div class="bg-white p-6 rounded-xl border border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">Paso 3: Restricción de Rotación</h2>
-                <p class="text-sm text-gray-600 mb-2">
-                    Las personas en esta lista serán asignadas una sola vez por equipo al mes, si es posible. <br> (Ejemplo: Juan, solo estara usado en Equipo 1 y una vez en Equipo 2.)
+            <!-- Paso 4: Restricción de Rotación -->
+            <div class="bg-white p-6 rounded-2xl border-2 border-indigo-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3">
+                    <span class="flex items-center justify-center w-8 h-8 bg-indigo-600 text-white rounded-full text-sm font-bold">4</span>
+                    Restricción de Rotación
+                </h2>
+                <p class="text-sm text-gray-600 mb-3 bg-amber-50 p-3 rounded-lg border border-amber-200">
+                    💡 Las personas en esta lista serán asignadas una sola vez por equipo al mes, si es posible.
                 </p>
-                <textarea id="rotation-list" rows="4" class="w-full p-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 resize-none" placeholder="Juan Pérez&#10;Mario López&#10;..."></textarea>
+                <textarea id="rotation-list" rows="4" class="w-full p-3 border-2 border-gray-200 rounded-xl input-field focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none resize-none" placeholder="Juan Pérez&#10;Mario López&#10;..."></textarea>
             </div>
             
-            <div class="bg-white p-6 rounded-xl border border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">Paso 4: Define las restricciones de días</h2>
-                <div id="restrictions-container" class="space-y-4">
-                    <p class="text-sm text-gray-600">Haz clic en "Agregar Restricción" para añadir días no disponibles por persona.</p>
+            <!-- Paso 5: Restricciones de días -->
+            <div class="bg-white p-6 rounded-2xl border-2 border-indigo-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3">
+                    <span class="flex items-center justify-center w-8 h-8 bg-indigo-600 text-white rounded-full text-sm font-bold">5</span>
+                    Define las restricciones de días
+                </h2>
+                <div id="restrictions-container" class="space-y-3 mb-4">
+                    <p class="text-sm text-gray-600 bg-blue-50 p-3 rounded-lg border border-blue-200">📅 Agrega los días en que cada persona no está disponible</p>
                 </div>
-                <button id="add-restriction-btn" class="mt-4 px-4 py-2 bg-[#4b6da6] text-white text-sm font-semibold rounded-lg hover:bg-opacity-90 transition duration-200">
+                <button id="add-restriction-btn" class="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all duration-300 shadow-sm hover:shadow-md">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
                     Agregar Restricción
                 </button>
             </div>
-        </div>
-        
-        <div class="bg-white p-6 rounded-xl border border-gray-200 mb-8">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4">Paso 5: Generar y Exportar Horario</h2>
-            <div class="mb-4">
-                <label for="schedule-title" class="block text-sm font-medium text-gray-700">Título del Horario:</label>
-                <input type="text" id="schedule-title" class="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm" placeholder="Ej: Horario de Diciembre 2025">
-            </div>
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <button id="generate-btn" class="px-8 py-4 bg-[#4b6da6] text-white font-bold rounded-full shadow-lg hover:bg-opacity-90 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300">
-                    Generar Horario
-                </button>
-                <button id="export-pdf-btn" class="px-8 py-4 bg-gray-200 text-gray-800 font-bold rounded-full shadow-lg hover:bg-gray-300 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-gray-300">
-                    Exportar a PDF
-                </button>
-                <button id="export-excel-btn" class="px-8 py-4 bg-green-600 text-white font-bold rounded-full shadow-lg hover:bg-green-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-300">
-                    Exportar a Excel
-                </button>
-            </div>
-        </div>
 
-        <div id="schedule-container" class="mt-8">
-            </div>
-
-        <div id="alert-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-            <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-                <div class="mt-3 text-center">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900" id="alert-title"></h3>
-                    <div class="mt-2 px-7 py-3">
-                        <p class="text-sm text-gray-500" id="alert-message"></p>
-                    </div>
-                    <div class="items-center px-4 py-3">
-                        <button id="close-alert-btn" class="px-4 py-2 bg-[#4b6da6] text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                            Cerrar
-                        </button>
-                    </div>
+            <!-- Paso 6: Generar y Exportar -->
+            <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-2xl border-2 border-green-200 shadow-sm">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3">
+                    <span class="flex items-center justify-center w-8 h-8 bg-green-600 text-white rounded-full text-sm font-bold">6</span>
+                    Generar y Exportar Horario
+                </h2>
+                <div class="mb-4">
+                    <label for="schedule-title" class="block text-sm font-semibold text-gray-700 mb-2">Título del Horario:</label>
+                    <input type="text" id="schedule-title" class="w-full p-3 border-2 border-gray-200 rounded-xl input-field focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none" placeholder="Ej: Horario de Diciembre 2025">
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <button id="generate-btn" class="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                        Generar Horario
+                    </button>
+                    <button id="export-pdf-btn" class="flex items-center gap-2 px-6 py-4 bg-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:bg-red-700 transition-all duration-300 hover:scale-105">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                        Exportar PDF
+                    </button>
+                    <button id="export-excel-btn" class="flex items-center gap-2 px-6 py-4 bg-emerald-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:bg-emerald-700 transition-all duration-300 hover:scale-105">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        Exportar Excel
+                    </button>
                 </div>
             </div>
-        </div>
-        <div>
-            <h66 class="text-center text-gray-500 text-xs mt-8"><b>Nota: </b><i>"Codigo corregido y mejorado con ayuda de I.A"</i> <br><b> -GOMLET-</b></h6>
+
+            <!-- Contenedor del horario -->
+            <div id="schedule-container" class="fade-in"></div>
+
         </div>
 
+        <!-- Footer -->
+        <div class="text-center mt-8 text-white/80">
+            <p class="text-sm"><b>Nota:</b> <i>"Código mejorado con ayuda de I.A"</i></p>
+            <p class="font-bold mt-1">-GOMLET-</p>
+        </div>
+    </div>
+
+    <!-- Modal de Alerta -->
+    <div id="alert-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
+        <div class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 transform transition-all">
+            <div class="text-center">
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-indigo-100 mb-4">
+                    <svg class="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2" id="alert-title"></h3>
+                <p class="text-sm text-gray-600 mb-6" id="alert-message"></p>
+                <button id="close-alert-btn" class="w-full px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg">
+                    Cerrar
+                </button>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -129,10 +243,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 
     <script>
-        // Definición de la lógica de la aplicación
         document.addEventListener('DOMContentLoaded', () => {
-
-            // Referencias a elementos del DOM
             const daysContainer = document.getElementById('days-container');
             const addDayBtn = document.getElementById('add-day-btn');
             const teamsContainer = document.getElementById('teams-container');
@@ -145,6 +256,8 @@
             const exportExcelBtn = document.getElementById('export-excel-btn');
             const scheduleContainer = document.getElementById('schedule-container');
             const scheduleTitleEl = document.getElementById('schedule-title');
+            const monthSelect = document.getElementById('month-select');
+            const yearInput = document.getElementById('year-input');
             const saveBackupBtn = document.getElementById('save-backup-btn');
             const loadBackupBtn = document.getElementById('load-backup-btn');
             const backupFileInput = document.getElementById('backup-file-input');
@@ -153,92 +266,198 @@
             const alertMessage = document.getElementById('alert-message');
             const closeAlertBtn = document.getElementById('close-alert-btn');
 
-            /**
-             * Muestra un modal de alerta personalizado.
-             * @param {string} title - El título de la alerta.
-             * @param {string} message - El mensaje de la alerta.
-             */
             function showAlert(title, message) {
                 alertTitle.textContent = title;
                 alertMessage.textContent = message;
                 alertModal.classList.remove('hidden');
             }
 
-            // Cierra el modal de alerta
             closeAlertBtn.addEventListener('click', () => {
                 alertModal.classList.add('hidden');
             });
-            
-            // Datos de ejemplo vacíos para la privacidad del usuario
-            const exampleDays = [];
-            
-            const exampleTeams = [];
-            
-            const restrictionsExample = [];
-            
-            const rotationExample = '';
 
-            // Llenar la UI con los datos de ejemplo (ahora vacíos)
-            if (daysContainer.children.length === 0) {
-                exampleDays.forEach(day => addDayRow(day.day, day.date));
-            }
-            exampleTeams.forEach(team => addTeamRow(team.name, team.members));
-            restrictionsExample.forEach(restriction => addRestrictionRow(restriction.name, restriction.days));
-            rotationListEl.value = rotationExample;
-            
+            // Establecer mes actual
+            const currentMonth = new Date().getMonth();
+            monthSelect.selectedIndex = currentMonth;
+
             addDayBtn.addEventListener('click', () => addDayRow());
             addTeamBtn.addEventListener('click', () => addTeamRow());
             addRestrictionBtn.addEventListener('click', () => addRestrictionRow());
 
+            function addDayRow(day = '', date = '') {
+                const row = document.createElement('div');
+                row.classList.add('flex', 'flex-col', 'sm:flex-row', 'gap-3', 'items-end', 'day-row', 'bg-gray-50', 'p-4', 'rounded-xl', 'border', 'border-gray-200');
+                row.innerHTML = `
+                    <div class="flex-1">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Día de la semana:</label>
+                        <input type="text" value="${day}" class="w-full p-3 border-2 border-gray-200 rounded-xl day-name-input input-field focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" placeholder="Ej. Miércoles">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Fecha del mes:</label>
+                        <input type="number" value="${date}" class="w-full p-3 border-2 border-gray-200 rounded-xl day-date-input input-field focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" placeholder="Ej. 3" min="1" max="31">
+                    </div>
+                    <button class="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200 remove-btn" aria-label="Eliminar día">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                    </button>
+                `;
+                daysContainer.appendChild(row);
+                row.querySelector('.remove-btn').addEventListener('click', () => {
+                    daysContainer.removeChild(row);
+                });
+            }
+
+            function getDaysFromInputs() {
+                const days = [];
+                const dayRows = daysContainer.querySelectorAll('.day-row');
+                dayRows.forEach(row => {
+                    const dayName = row.querySelector('.day-name-input').value.trim();
+                    const dayDate = parseInt(row.querySelector('.day-date-input').value.trim());
+                    if (dayName && !isNaN(dayDate)) {
+                        days.push({ day: dayName, date: dayDate });
+                    }
+                });
+                return days;
+            }
+
+            function addTeamRow(name = '', members = '') {
+                const row = document.createElement('div');
+                row.classList.add('bg-gradient-to-br', 'from-gray-50', 'to-gray-100', 'p-5', 'rounded-xl', 'border-2', 'border-gray-200', 'relative', 'shadow-sm', 'hover:shadow-md', 'transition-shadow', 'duration-300');
+                row.innerHTML = `
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Nombre del Equipo:</label>
+                            <input type="text" value="${name}" class="w-full p-3 border-2 border-gray-200 rounded-xl team-name-input input-field focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" placeholder="Ej. Audio">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Miembros (uno por línea):</label>
+                            <textarea rows="5" class="w-full p-3 border-2 border-gray-200 rounded-xl team-members-input input-field focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none resize-none" placeholder="Juan Pérez&#10;Mario López&#10;...">${members}</textarea>
+                        </div>
+                    </div>
+                    <button class="absolute top-3 right-3 p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200 remove-btn" aria-label="Eliminar equipo">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                    </button>
+                `;
+                teamsContainer.appendChild(row);
+                row.querySelector('.remove-btn').addEventListener('click', () => {
+                    teamsContainer.removeChild(row);
+                });
+            }
+
+            function getTeamsFromInputs() {
+                const teams = [];
+                const teamRows = teamsContainer.querySelectorAll('.bg-gradient-to-br');
+                teamRows.forEach(row => {
+                    const nameInput = row.querySelector('.team-name-input');
+                    const membersInput = row.querySelector('.team-members-input');
+                    const teamName = nameInput.value.trim();
+                    const members = membersInput.value.split('\n').map(name => name.trim()).filter(name => name);
+                    if (teamName && members.length > 0) {
+                        teams.push({ name: teamName, members: members });
+                    }
+                });
+                return teams;
+            }
+
+            function addRestrictionRow(name = '', days = '') {
+                const row = document.createElement('div');
+                row.classList.add('flex', 'flex-col', 'sm:flex-row', 'gap-3', 'items-end', 'bg-gray-50', 'p-4', 'rounded-xl', 'border', 'border-gray-200');
+                row.innerHTML = `
+                    <div class="flex-1">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Nombre Completo:</label>
+                        <input type="text" value="${name}" class="w-full p-3 border-2 border-gray-200 rounded-xl name-input input-field focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" placeholder="Antonio López">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Días que no puede (ej: 6, 13):</label>
+                        <input type="text" value="${days}" class="w-full p-3 border-2 border-gray-200 rounded-xl days-input input-field focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" placeholder="3, 10, 17">
+                    </div>
+                    <button class="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200 remove-btn" aria-label="Eliminar restricción">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                    </button>
+                `;
+                restrictionsContainer.appendChild(row);
+                row.querySelector('.remove-btn').addEventListener('click', () => {
+                    restrictionsContainer.removeChild(row);
+                });
+            }
+
+            function getRestrictionsFromInputs() {
+                const restrictions = {};
+                const restrictionRows = restrictionsContainer.querySelectorAll('.flex.flex-col.sm\\:flex-row.gap-3');
+                restrictionRows.forEach(row => {
+                    const nameInput = row.querySelector('.name-input');
+                    const daysInput = row.querySelector('.days-input');
+                    if (nameInput && daysInput) {
+                        const name = nameInput.value.trim();
+                        const daysStr = daysInput.value;
+                        if (name && daysStr) {
+                            const days = daysStr.split(',').map(d => parseInt(d.trim())).filter(d => !isNaN(d));
+                            restrictions[name] = days;
+                        }
+                    }
+                });
+                return restrictions;
+            }
+
             generateBtn.addEventListener('click', () => {
-                // Limpiar el contenedor de horarios antes de generar uno nuevo
                 scheduleContainer.innerHTML = '';
                 
-                // Obtener los datos del usuario
                 const teams = getTeamsFromInputs();
+                if (teams.length === 0) {
+                    showAlert('Error', 'Debes agregar al menos un equipo con miembros.');
+                    return;
+                }
+
                 const allTeamMembers = teams.flatMap(team => team.members);
                 const uniqueMembers = [...new Set(allTeamMembers)];
                 const restrictions = getRestrictionsFromInputs();
                 const rotationMembers = rotationListEl.value.split('\n').map(name => name.trim()).filter(name => name);
                 const specificDays = getDaysFromInputs();
-                const scheduleTitle = scheduleTitleEl.value || 'Horario Generado';
                 
-                // Generar el horario combinado
-                const fullSchedule = generateCombinedSchedule(specificDays, teams, uniqueMembers, restrictions, rotationMembers);
+                if (specificDays.length === 0) {
+                    showAlert('Error', 'Debes agregar al menos un día al horario.');
+                    return;
+                }
+
+                const selectedMonth = monthSelect.value;
+                const selectedYear = yearInput.value;
+                const scheduleTitle = scheduleTitleEl.value || `Horario de ${selectedMonth} ${selectedYear}`;
                 
-                // Mostrar el horario en la página
+                const fullSchedule = generateCombinedSchedule(specificDays, teams, uniqueMembers, restrictions, rotationMembers, selectedMonth, selectedYear);
                 renderSingleSchedule(fullSchedule, teams, scheduleTitle);
+                
+                showAlert('¡Éxito!', 'Horario generado correctamente. Puedes exportarlo a PDF o Excel.');
             });
-            
-            // Lógica para exportar el horario a PDF
+
             exportPdfBtn.addEventListener('click', () => {
-                // Verificar si hay un horario generado
                 const scheduleElement = scheduleContainer.querySelector('div');
                 if (!scheduleElement) {
                     showAlert('Error', 'Primero, genera un horario para poder exportarlo.');
                     return;
                 }
                 
-                // Ocultar el botón de exportar y generar para que no aparezcan en el PDF
-                const buttonsDiv = document.querySelector('.flex.flex-col.sm\\:flex-row.justify-center');
+                const buttonsDiv = document.querySelector('.flex.flex-wrap.gap-3');
                 const originalDisplay = buttonsDiv.style.display;
                 buttonsDiv.style.display = 'none';
 
-                // Usar html2canvas para renderizar el contenedor del horario en un canvas
                 html2canvas(scheduleElement, {
-                    scale: 2, // Aumentar la escala para mejor calidad
-                    useCORS: true, // Permitir que las imágenes se carguen desde otras fuentes
-                    backgroundColor: '#ffffff', // Fondo del PDF
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: '#ffffff',
                 }).then(canvas => {
-                    // Restablecer el display de los botones
                     buttonsDiv.style.display = originalDisplay;
                     
                     const { jsPDF } = window.jspdf;
                     const imgData = canvas.toDataURL('image/png');
-                    const doc = new jsPDF('p', 'mm', 'a4'); // 'p' for portrait, 'mm' for millimeters, 'a4' size
+                    const doc = new jsPDF('p', 'mm', 'a4');
                     
-                    const imgWidth = 210; // Ancho A4 en mm
-                    const pageHeight = 297; // Alto A4 en mm
+                    const imgWidth = 210;
+                    const pageHeight = 297;
                     const imgHeight = canvas.height * imgWidth / canvas.width;
                     let heightLeft = imgHeight;
                     let position = 0;
@@ -253,9 +472,8 @@
                         heightLeft -= pageHeight;
                     }
 
-                    // Guardar el documento PDF
                     doc.save('horario-generado.pdf');
-                    showAlert('Éxito', '¡Horario exportado a PDF correctamente!');
+                    showAlert('¡Éxito!', 'Horario exportado a PDF correctamente.');
                 }).catch(error => {
                     console.error("Error al generar PDF:", error);
                     buttonsDiv.style.display = originalDisplay;
@@ -263,7 +481,6 @@
                 });
             });
 
-            // Lógica para exportar el horario a Excel
             exportExcelBtn.addEventListener('click', () => {
                 const scheduleTable = scheduleContainer.querySelector('table');
                 if (scheduleTable) {
@@ -272,171 +489,15 @@
                     XLSX.utils.book_append_sheet(wb, ws, "Horario");
                     const title = scheduleTitleEl.value.trim() || 'horario_generado';
                     XLSX.writeFile(wb, `${title}.xlsx`);
-                    showAlert('Éxito', '¡Horario exportado a Excel correctamente!');
+                    showAlert('¡Éxito!', 'Horario exportado a Excel correctamente.');
                 } else {
                     showAlert('Error', 'Primero, genera un horario para poder exportar a Excel.');
                 }
             });
 
-
-            /**
-             * Agrega una nueva fila de entrada de día a la UI.
-             * @param {string} [day=''] - Nombre del día.
-             * @param {number} [date=''] - Fecha del día.
-             */
-            function addDayRow(day = '', date = '') {
-                const row = document.createElement('div');
-                row.classList.add('flex', 'flex-col', 'sm:flex-row', 'gap-4', 'items-center', 'day-row');
-                row.innerHTML = `
-                    <div class="w-full sm:w-1/2">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Día de la semana:</label>
-                        <input type="text" value="${day}" class="w-full p-2 border rounded-lg day-name-input bg-gray-50 text-gray-800 border-gray-300" placeholder="Ej. Miércoles">
-                    </div>
-                    <div class="w-full sm:w-1/2">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Fecha del mes:</label>
-                        <input type="number" value="${date}" class="w-full p-2 border rounded-lg day-date-input bg-gray-50 text-gray-800 border-gray-300" placeholder="Ej. 3">
-                    </div>
-                    <button class="text-gray-400 hover:text-red-500 transition duration-200 remove-btn" aria-label="Eliminar día">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </button>
-                `;
-                daysContainer.appendChild(row);
-
-                row.querySelector('.remove-btn').addEventListener('click', () => {
-                    daysContainer.removeChild(row);
-                });
-            }
-
-            /**
-             * Obtiene los días y sus fechas desde los campos de entrada de la UI.
-             * @returns {Object[]} - Un array de objetos con el día de la semana y la fecha.
-             */
-            function getDaysFromInputs() {
-                const days = [];
-                const dayRows = daysContainer.querySelectorAll('.day-row');
-                dayRows.forEach(row => {
-                    const dayName = row.querySelector('.day-name-input').value.trim();
-                    const dayDate = parseInt(row.querySelector('.day-date-input').value.trim());
-                    if (dayName && !isNaN(dayDate)) {
-                        days.push({ day: dayName, date: dayDate });
-                    }
-                });
-                return days;
-            }
-
-            /**
-             * Agrega una nueva fila de entrada de equipo a la UI.
-             * @param {string} [name=''] - Nombre del equipo.
-             * @param {string} [members=''] - Miembros del equipo.
-             */
-            function addTeamRow(name = '', members = '') {
-                const row = document.createElement('div');
-                row.classList.add('flex', 'flex-col', 'gap-4', 'p-4', 'border', 'rounded-lg', 'bg-gray-50', 'relative', 'shadow-sm', 'border-gray-200');
-                row.innerHTML = `
-                    <div class="flex-1">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del Equipo:</label>
-                        <input type="text" value="${name}" class="w-full p-2 border rounded-lg team-name-input bg-white text-gray-800 border-gray-300" placeholder="Ej. Audio">
-                    </div>
-                    <div class="flex-1">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Miembros (uno por línea):</label>
-                        <textarea rows="6" class="w-full p-2 border rounded-lg team-members-input bg-white text-gray-800 border-gray-300" placeholder="Juan Pérez&#10;Mario López&#10;...">${members}</textarea>
-                    </div>
-                    <button class="absolute top-2 right-2 text-gray-400 hover:text-red-500 transition duration-200 remove-btn" aria-label="Eliminar equipo">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </button>
-                `;
-                teamsContainer.appendChild(row);
-
-                row.querySelector('.remove-btn').addEventListener('click', () => {
-                    teamsContainer.removeChild(row);
-                });
-            }
-
-            /**
-             * Obtiene los equipos y sus miembros desde los campos de entrada de la UI.
-             * @returns {Object[]} - Un array de objetos con el nombre del equipo y sus miembros.
-             */
-            function getTeamsFromInputs() {
-                const teams = [];
-                const teamRows = teamsContainer.querySelectorAll('.flex.flex-col');
-                teamRows.forEach(row => {
-                    const nameInput = row.querySelector('.team-name-input');
-                    const membersInput = row.querySelector('.team-members-input');
-                    const teamName = nameInput.value.trim();
-                    const members = membersInput.value.split('\n').map(name => name.trim()).filter(name => name);
-                    if (teamName && members.length > 0) {
-                        teams.push({ name: teamName, members: members });
-                    }
-                });
-                return teams;
-            }
-
-            /**
-             * Agrega una nueva fila de entrada de restricción a la UI.
-             * @param {string} [name=''] - Nombre de la persona para la fila de ejemplo.
-             * @param {string} [days=''] - Días de restricción para la fila de ejemplo.
-             */
-            function addRestrictionRow(name = '', days = '') {
-                const row = document.createElement('div');
-                row.classList.add('flex', 'flex-col', 'sm:flex-row', 'gap-4', 'items-center');
-                row.innerHTML = `
-                    <div class="w-full sm:w-1/2">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre Completo:</label>
-                        <input type="text" value="${name}" class="w-full p-2 border rounded-lg name-input bg-gray-50 text-gray-800 border-gray-300" placeholder="Antonio López">
-                    </div>
-                    <div class="w-full sm:w-1/2">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Días que no puede (ej: 6, 13):</label>
-                        <input type="text" value="${days}" class="w-full p-2 border rounded-lg days-input bg-gray-50 text-gray-800 border-gray-300" placeholder="3, 10, 17">
-                    </div>
-                    <button class="text-gray-400 hover:text-red-500 transition duration-200 remove-btn" aria-label="Eliminar restricción">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </button>
-                `;
-                restrictionsContainer.appendChild(row);
-
-                row.querySelector('.remove-btn').addEventListener('click', () => {
-                    restrictionsContainer.removeChild(row);
-                });
-            }
-
-            /**
-             * Obtiene las restricciones de los campos de entrada de la UI.
-             * @returns {Object.<string, number[]>} - Un objeto con los nombres y los días restringidos.
-             */
-            function getRestrictionsFromInputs() {
-                const restrictions = {};
-                const restrictionRows = restrictionsContainer.querySelectorAll('.flex.flex-col.sm\\:flex-row');
-                restrictionRows.forEach(row => {
-                    const nameInput = row.querySelector('.name-input');
-                    const daysInput = row.querySelector('.days-input');
-                    const name = nameInput.value.trim();
-                    const daysStr = daysInput.value;
-                    if (name && daysStr) {
-                        const days = daysStr.split(',').map(d => parseInt(d.trim())).filter(d => !isNaN(d));
-                        restrictions[name] = days;
-                    }
-                });
-                return restrictions;
-            }
-
-            /**
-             * Genera un horario combinado con carga de trabajo equitativa.
-             * @param {Object[]} days - Array de objetos con el día de la semana y la fecha.
-             * @param {Object[]} teams - Array de objetos con el nombre del equipo y sus miembros.
-             * @param {string[]} allMembers - Lista de todos los miembros únicos del equipo.
-             * @param {Object.<string, number[]>} restrictions - Restricciones de días.
-             * @param {string[]} rotationMembers - Miembros sujetos a la restricción de rotación.
-             * @returns {Object} - Un objeto que representa el horario combinado.
-             */
-            function generateCombinedSchedule(days, teams, allMembers, restrictions, rotationMembers) {
+            function generateCombinedSchedule(days, teams, allMembers, restrictions, rotationMembers, month, year) {
                 const fullSchedule = {};
-                const assignmentCounts = {}; // Registro de cuántas veces se ha asignado a cada miembro
+                const assignmentCounts = {};
                 allMembers.forEach(member => {
                     assignmentCounts[member] = 0;
                 });
@@ -449,33 +510,25 @@
                     const dayAssignments = {};
                     const assignedForToday = [];
     
-                    // Ordenar los equipos de forma aleatoria para evitar sesgos.
                     const shuffledTeams = [...teams];
                     randomShuffle(shuffledTeams);
     
                     shuffledTeams.forEach(team => {
                         dayAssignments[team.name] = 'Sin asignar';
     
-                        // Filtrar candidatos disponibles:
-                        // 1. Están en el equipo.
-                        // 2. Están disponibles hoy (no restringidos, no asignados ya).
                         const teamCandidates = team.members.filter(member =>
                             availableMembers.includes(member) &&
                             !assignedForToday.includes(member)
                         );
     
-                        // Priorizar a los miembros de la lista de rotación que han sido asignados menos veces.
                         const candidates = teamCandidates.sort((a, b) => {
                             const isArotation = rotationMembers.includes(a);
                             const isBrotation = rotationMembers.includes(b);
     
-                            // Si ambos están en rotación o ninguno, ordenar por el contador de asignaciones.
                             if (isArotation === isBrotation) {
                                 return assignmentCounts[a] - assignmentCounts[b];
                             }
                             
-                            // Si solo uno está en la lista de rotación, priorizar al que no está.
-                            // Esto ayuda a mantener a los de rotación como "comodines".
                             return isArotation ? 1 : -1;
                         });
     
@@ -483,57 +536,52 @@
                             const selectedMember = candidates[0];
                             dayAssignments[team.name] = selectedMember;
                             assignedForToday.push(selectedMember);
-                            assignmentCounts[selectedMember]++; // ¡Incrementar el contador!
+                            assignmentCounts[selectedMember]++;
                         }
                     });
     
-                    fullSchedule[dayInfo.day + ' ' + dayInfo.date + ' Septiembre'] = dayAssignments;
+                    fullSchedule[`${dayInfo.day} ${dayInfo.date} ${month} ${year}`] = dayAssignments;
                 });
     
                 return fullSchedule;
             }
             
-            /**
-             * Renderiza un único horario en la página como una tabla.
-             * @param {Object} schedule - El objeto de horario a renderizar.
-             * @param {Object[]} teams - Array de objetos de equipos para obtener los nombres de las columnas.
-             * @param {string} scheduleTitle - El título del horario.
-             */
             function renderSingleSchedule(schedule, teams, scheduleTitle) {
                 if (Object.keys(schedule).length === 0) return;
                 
                 const teamNames = teams.map(t => t.name);
 
                 let html = `
-                    <div class="mb-8 p-4 bg-white rounded-xl border border-gray-200">
-                        <h2 class="text-2xl font-bold text-gray-800 text-center mb-4">${scheduleTitle}</h2>
+                    <div class="bg-white p-6 rounded-2xl border-2 border-green-200 shadow-lg">
+                        <h2 class="text-3xl font-bold text-gray-800 text-center mb-6 pb-4 border-b-2 border-gray-200">${scheduleTitle}</h2>
                         <div class="overflow-x-auto">
-                            <table class="min-w-full text-left table-auto border-collapse">
-                                <thead class="bg-gray-100">
-                                    <tr>
-                                        <th class="p-3 text-sm font-semibold tracking-wide text-gray-800">FECHAS</th>
-                                        ${teamNames.map(name => `<th class="p-3 text-sm font-semibold tracking-wide text-gray-800">${name.toUpperCase()}</th>`).join('')}
+                            <table class="min-w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+                                        <th class="p-4 text-sm font-bold tracking-wide">FECHAS</th>
+                                        ${teamNames.map(name => `<th class="p-4 text-sm font-bold tracking-wide">${name.toUpperCase()}</th>`).join('')}
                                     </tr>
                                 </thead>
                                 <tbody>
                                     ${Object.keys(schedule).map((day, index) => `
-                                        <tr class="${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}">
-                                            <td class="p-3 text-sm text-gray-700 font-bold">${day}</td>
-                                            ${teamNames.map(name => `<td class="p-3 text-sm text-gray-700">${schedule[day][name]}</td>`).join('')}
+                                        <tr class="${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-indigo-50 transition-colors duration-200">
+                                            <td class="p-4 text-sm font-bold text-gray-800 border-b border-gray-200">${day}</td>
+                                            ${teamNames.map(name => `<td class="p-4 text-sm text-gray-700 border-b border-gray-200">${schedule[day][name]}</td>`).join('')}
                                         </tr>
                                     `).join('')}
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="mt-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
+                            <p class="text-sm text-gray-600 text-center">
+                                ✨ Horario generado con distribución equitativa de cargas
+                            </p>
                         </div>
                     </div>
                 `;
                 scheduleContainer.innerHTML = html;
             }
             
-            /**
-             * Función simple para mezclar un array (Fisher-Yates shuffle).
-             * @param {Array} array - El array a mezclar.
-             */
             function randomShuffle(array) {
                 let currentIndex = array.length, randomIndex;
                 while (currentIndex !== 0) {
@@ -544,21 +592,20 @@
                 return array;
             }
 
-            // --- COPIA DE SEGURIDAD CON ARCHIVOS ---
-            
-            /**
-             * Guarda todos los datos de la aplicación en un archivo JSON y lo descarga.
-             */
             function downloadBackup() {
                 const teams = getTeamsFromInputs();
                 const restrictions = getRestrictionsFromInputs();
                 const rotationList = rotationListEl.value;
                 const days = getDaysFromInputs();
+                const month = monthSelect.value;
+                const year = yearInput.value;
                 const backupData = {
                     teams,
                     restrictions,
                     rotationList,
-                    days
+                    days,
+                    month,
+                    year
                 };
                 
                 const dataStr = JSON.stringify(backupData, null, 2);
@@ -567,19 +614,15 @@
                 
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = 'horario-backup.json';
+                a.download = `horario-backup-${month}-${year}.json`;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
 
-                showAlert('Copia de Seguridad', 'Datos guardados exitosamente. Se ha descargado el archivo "horario-backup.json".');
+                showAlert('Copia de Seguridad', `Datos guardados exitosamente. Se ha descargado el archivo "horario-backup-${month}-${year}.json".`);
             }
 
-            /**
-             * Carga los datos de la aplicación desde un archivo JSON.
-             * @param {File} file - El archivo JSON seleccionado por el usuario.
-             */
             function loadBackupFromFile(file) {
                 if (!file) {
                     showAlert('Error', 'No se seleccionó ningún archivo.');
@@ -591,11 +634,11 @@
                     try {
                         const backupData = JSON.parse(event.target.result);
                         if (backupData && backupData.teams && backupData.restrictions) {
-                            // Limpiar y cargar los datos
                             teamsContainer.innerHTML = '';
                             backupData.teams.forEach(team => addTeamRow(team.name, team.members.join('\n')));
 
                             restrictionsContainer.innerHTML = '';
+                            restrictionsContainer.innerHTML = '<p class="text-sm text-gray-600 bg-blue-50 p-3 rounded-lg border border-blue-200">📅 Agrega los días en que cada persona no está disponible</p>';
                             Object.keys(backupData.restrictions).forEach(member => {
                                 addRestrictionRow(member, backupData.restrictions[member].join(', '));
                             });
@@ -606,10 +649,17 @@
                             if (backupData.days && backupData.days.length > 0) {
                                 backupData.days.forEach(day => addDayRow(day.day, day.date));
                             } else {
-                                addDayRow(''); // Añadir un campo vacío si no hay días guardados
+                                addDayRow();
                             }
 
-                            showAlert('Copia de Seguridad', 'Datos cargados exitosamente desde el archivo!');
+                            if (backupData.month) {
+                                monthSelect.value = backupData.month;
+                            }
+                            if (backupData.year) {
+                                yearInput.value = backupData.year;
+                            }
+
+                            showAlert('Copia de Seguridad', 'Datos cargados exitosamente desde el archivo.');
                         } else {
                             showAlert('Error', 'El archivo no tiene un formato de respaldo válido.');
                         }
@@ -624,7 +674,6 @@
                 reader.readAsText(file);
             }
 
-            // Asignar eventos a los botones de copia de seguridad
             saveBackupBtn.addEventListener('click', downloadBackup);
             
             loadBackupBtn.addEventListener('click', () => {
@@ -636,9 +685,8 @@
                 loadBackupFromFile(file);
             });
 
-            // Llenar con datos de ejemplo al cargar la página por primera vez
             if (daysContainer.children.length === 0) {
-                addDayRow(''); 
+                addDayRow();
             }
         });
     </script>
