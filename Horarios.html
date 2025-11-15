@@ -7,235 +7,169 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .glass-morphism {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-        }
-        .input-field {
-            transition: all 0.3s ease;
-        }
-        .input-field:focus {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(75, 109, 166, 0.15);
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .fade-in {
-            animation: fadeIn 0.5s ease-out;
+            font-family: 'Noto Sans', sans-serif;
+            background-color: #f3f4f6; /* Fondo gris claro de Tailwind */
         }
     </style>
 </head>
-<body class="min-h-screen py-8 px-4">
+<body class="p-4 sm:p-8">
 
-    <div class="max-w-6xl mx-auto">
-        <!-- Header con logo -->
-        <div class="text-center mb-8 fade-in">
-            <div class="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full shadow-lg mb-4">
-                <svg class="w-12 h-12 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                </svg>
-            </div>
-            <h1 class="text-5xl font-bold text-white mb-3 drop-shadow-lg">
-                Generador de Horarios
-            </h1>
-            <p class="text-xl text-white/90 mb-6">
-                Organiza equipos y gestiona turnos de manera inteligente
-            </p>
-            <a href="index.html" class="inline-flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-full backdrop-blur-sm transition-all duration-300 hover:scale-105">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                </svg>
-                Volver al inicio
-            </a>
-        </div>
-
-        <div class="glass-morphism rounded-3xl shadow-2xl p-8 space-y-8 fade-in">
-            
-            <!-- Sección de Backup -->
-            <div class="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-2xl border border-indigo-100">
-                <h2 class="text-2xl font-bold text-gray-800 mb-2 flex items-center gap-3">
-                    <svg class="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
-                    </svg>
-                    Copia de Seguridad
-                </h2>
-                <p class="text-sm text-gray-600 mb-4">Guarda y carga tus configuraciones</p>
-                <div class="flex flex-wrap gap-3">
-                    <button id="save-backup-btn" class="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
-                        </svg>
-                        Guardar Datos
-                    </button>
-                    <button id="load-backup-btn" class="flex items-center gap-2 px-6 py-3 bg-purple-600 text-white font-semibold rounded-xl hover:bg-purple-700 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
-                        </svg>
-                        Cargar Datos
-                    </button>
-                    <input type="file" id="backup-file-input" class="hidden" accept=".json">
-                </div>
-            </div>
-
-            <!-- Paso 1: Mes y Año -->
-            <div class="bg-white p-6 rounded-2xl border-2 border-indigo-100 shadow-sm hover:shadow-md transition-shadow duration-300">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3">
-                    <span class="flex items-center justify-center w-8 h-8 bg-indigo-600 text-white rounded-full text-sm font-bold">1</span>
-                    Define el Mes y Año
-                </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Mes:</label>
-                        <select id="month-select" class="w-full p-3 border-2 border-gray-200 rounded-xl input-field focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none">
-                            <option value="Enero">Enero</option>
-                            <option value="Febrero">Febrero</option>
-                            <option value="Marzo">Marzo</option>
-                            <option value="Abril">Abril</option>
-                            <option value="Mayo">Mayo</option>
-                            <option value="Junio">Junio</option>
-                            <option value="Julio">Julio</option>
-                            <option value="Agosto">Agosto</option>
-                            <option value="Septiembre">Septiembre</option>
-                            <option value="Octubre">Octubre</option>
-                            <option value="Noviembre">Noviembre</option>
-                            <option value="Diciembre">Diciembre</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Año:</label>
-                        <input type="number" id="year-input" value="2025" min="2020" max="2100" class="w-full p-3 border-2 border-gray-200 rounded-xl input-field focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Paso 2: Días del mes -->
-            <div class="bg-white p-6 rounded-2xl border-2 border-indigo-100 shadow-sm hover:shadow-md transition-shadow duration-300">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3">
-                    <span class="flex items-center justify-center w-8 h-8 bg-indigo-600 text-white rounded-full text-sm font-bold">2</span>
-                    Define los días del mes a programar
-                </h2>
-                <div id="days-container" class="space-y-3 mb-4"></div>
-                <button id="add-day-btn" class="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all duration-300 shadow-sm hover:shadow-md">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Agregar Día
-                </button>
-            </div>
-
-            <!-- Paso 3: Equipos -->
-            <div class="bg-white p-6 rounded-2xl border-2 border-indigo-100 shadow-sm hover:shadow-md transition-shadow duration-300">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3">
-                    <span class="flex items-center justify-center w-8 h-8 bg-indigo-600 text-white rounded-full text-sm font-bold">3</span>
-                    Define tus equipos
-                </h2>
-                <div id="teams-container" class="space-y-4 mb-4"></div>
-                <button id="add-team-btn" class="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all duration-300 shadow-sm hover:shadow-md">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Agregar Equipo
-                </button>
-            </div>
-
-            <!-- Paso 4: Restricción de Rotación -->
-            <div class="bg-white p-6 rounded-2xl border-2 border-indigo-100 shadow-sm hover:shadow-md transition-shadow duration-300">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3">
-                    <span class="flex items-center justify-center w-8 h-8 bg-indigo-600 text-white rounded-full text-sm font-bold">4</span>
-                    Restricción de Rotación
-                </h2>
-                <p class="text-sm text-gray-600 mb-3 bg-amber-50 p-3 rounded-lg border border-amber-200">
-                    💡 Las personas en esta lista serán asignadas una sola vez por equipo al mes, si es posible.
+    <div class="max-w-5xl mx-auto bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-gray-200">
+        
+        <div class="flex items-center gap-4 mb-6">
+            <svg class="h-14 w-14 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12v-.008zM15 12h.008v.008H15v-.008zM15 15h.008v.008H15v-.008zM9 12h.008v.008H9v-.008zM9 15h.008v.008H9v-.008z" />
+            </svg>
+            <div>
+                <h1 class="text-3xl sm:text-4xl font-bold text-indigo-600 mb-0">
+                    Generador de Horarios 
+                </h1>
+                <p class="text-gray-600">
+                    Define tus equipos, miembros y restricciones para generar un horario.
                 </p>
-                <textarea id="rotation-list" rows="4" class="w-full p-3 border-2 border-gray-200 rounded-xl input-field focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none resize-none" placeholder="Juan Pérez&#10;Mario López&#10;..."></textarea>
             </div>
-            
-            <!-- Paso 5: Restricciones de días -->
-            <div class="bg-white p-6 rounded-2xl border-2 border-indigo-100 shadow-sm hover:shadow-md transition-shadow duration-300">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3">
-                    <span class="flex items-center justify-center w-8 h-8 bg-indigo-600 text-white rounded-full text-sm font-bold">5</span>
-                    Define las restricciones de días
-                </h2>
-                <div id="restrictions-container" class="space-y-3 mb-4">
-                    <p class="text-sm text-gray-600 bg-blue-50 p-3 rounded-lg border border-blue-200">📅 Agrega los días en que cada persona no está disponible</p>
+        </div>
+        
+        <a href="index.html" class="bg-indigo-600 text-white px-3 py-2 text-sm font-semibold rounded-lg hover:bg-indigo-700 transition duration-300 inline-block mb-4">Inicio</a>
+
+        <div class="bg-white p-6 rounded-xl border border-gray-200 mb-8 shadow-md">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4 text-center">Copia de Seguridad</h2>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button id="save-backup-btn" class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 shadow-sm">
+                    Guardar Datos
+                </button>
+                <button id="load-backup-btn" class="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 shadow-sm">
+                    Cargar Datos
+                </button>
+                <button id="clear-data-btn" class="px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm">
+                    Limpiar Todos los Datos
+                </button>
+                <input type="file" id="backup-file-input" class="hidden" accept=".json">
+            </div>
+            <p class="text-sm text-gray-600 mt-4 text-center">
+                Guarda o carga los equipos, miembros y restricciones en un archivo JSON.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="flex flex-col gap-6">
+                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-md">
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Paso 1: Define los días</h2>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 p-4 bg-gray-50 rounded-lg border">
+                        <div>
+                            <label for="month-year-input" class="block text-sm font-medium text-gray-700 mb-1">Mes y Año para Autocompletar:</label>
+                            <input type="text" id="month-year-input" class="w-full p-2 border rounded-lg bg-white text-gray-800 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej: Diciembre 2025">
+                        </div>
+                        <div>
+                            <label for="weekday-select" class="block text-sm font-medium text-gray-700 mb-1">Día a programar:</label>
+                            <select id="weekday-select" class="w-full p-2 border rounded-lg bg-white text-gray-800 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500">
+                                <option value="0">Domingo</option>
+                                <option value="1">Lunes</option>
+                                <option value="2">Martes</option>
+                                <option value="3">Miércoles</option>
+                                <option value="4">Jueves</option>
+                                <option value="5">Viernes</option>
+                                <option value="6">Sábado</option>
+                            </select>
+                        </div>
+                        <button id="autofill-days-btn" class="sm:col-span-2 mt-2 px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition duration-200">
+                            Autocompletar Días
+                        </button>
+                    </div>
+
+                    <p class="text-sm text-gray-600 mb-4 text-center">...o agrega días manualmente:</p>
+                    
+                    <div id="days-container" class="space-y-4">
+                        </div>
+                    <button id="add-day-btn" class="mt-4 px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition duration-200">
+                        Agregar Día Manual
+                    </button>
                 </div>
-                <button id="add-restriction-btn" class="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all duration-300 shadow-sm hover:shadow-md">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Agregar Restricción
+
+                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-md">
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Paso 3: Restricción de Rotación</h2>
+                    <p class="text-sm text-gray-600 mb-2">
+                        Las personas en esta lista serán asignadas una sola vez por equipo al mes, si es posible. <br> (Ej: Juan, solo estará una vez en Equipo 1 y una vez en Equipo 2.)
+                    </p>
+                    <textarea id="rotation-list" rows="4" class="w-full p-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-200 resize-none" placeholder="Juan Pérez&#10;Mario López&#10;..."></textarea>
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-6">
+                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-md">
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Paso 2: Define tus equipos</h2>
+                    <div id="teams-container" class="space-y-6">
+                        </div>
+                    <button id="add-team-btn" class="mt-4 px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition duration-200">
+                        Agregar Equipo
+                    </button>
+                </div>
+                
+                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-md">
+                    <h2 class="text-2xl font-semibold text-gray-900 mb-4">Paso 4: Define las restricciones de días</h2>
+                    <div id="restrictions-container" class="space-y-4">
+                        <p class="text-sm text-gray-600">Haz clic en "Agregar Restricción" para añadir días no disponibles por persona.</p>
+                    </div>
+                    <button id="add-restriction-btn" class="mt-4 px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition duration-200">
+                        Agregar Restricción
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white p-6 rounded-xl border border-gray-200 mb-8 shadow-md">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Paso 5: Generar y Exportar Horario</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div>
+                    <label for="schedule-month" class="block text-sm font-medium text-gray-700">Mes del Horario (para la tabla):</label>
+                    <input type="text" id="schedule-month" class="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Ej: Diciembre 2025">
+                </div>
+                <div>
+                    <label for="schedule-title" class="block text-sm font-medium text-gray-700">Título del Horario:</label>
+                    <input type="text" id="schedule-title" class="mt-1 block w-full p-2 rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Ej: Horario General">
+                </div>
+            </div>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <button id="generate-btn" class="px-8 py-4 bg-indigo-600 text-white font-bold rounded-full shadow-lg hover:bg-indigo-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-300">
+                    Generar Horario
+                </button>
+                <button id="export-pdf-btn" class="px-8 py-4 bg-red-600 text-white font-bold rounded-full shadow-lg hover:bg-red-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-red-300">
+                    Exportar a PDF
+                </button>
+                <button id="export-excel-btn" class="px-8 py-4 bg-green-600 text-white font-bold rounded-full shadow-lg hover:bg-green-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-green-300">
+                    Exportar a Excel
                 </button>
             </div>
+        </div>
 
-            <!-- Paso 6: Generar y Exportar -->
-            <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-2xl border-2 border-green-200 shadow-sm">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-3">
-                    <span class="flex items-center justify-center w-8 h-8 bg-green-600 text-white rounded-full text-sm font-bold">6</span>
-                    Generar y Exportar Horario
-                </h2>
-                <div class="mb-4">
-                    <label for="schedule-title" class="block text-sm font-semibold text-gray-700 mb-2">Título del Horario:</label>
-                    <input type="text" id="schedule-title" class="w-full p-3 border-2 border-gray-200 rounded-xl input-field focus:border-green-500 focus:ring-2 focus:ring-green-200 outline-none" placeholder="Ej: Horario de Diciembre 2025">
-                </div>
-                <div class="flex flex-wrap gap-3">
-                    <button id="generate-btn" class="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                        </svg>
-                        Generar Horario
-                    </button>
-                    <button id="export-pdf-btn" class="flex items-center gap-2 px-6 py-4 bg-red-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:bg-red-700 transition-all duration-300 hover:scale-105">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                        </svg>
-                        Exportar PDF
-                    </button>
-                    <button id="export-excel-btn" class="flex items-center gap-2 px-6 py-4 bg-emerald-600 text-white font-bold rounded-xl shadow-lg hover:shadow-xl hover:bg-emerald-700 transition-all duration-300 hover:scale-105">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                        </svg>
-                        Exportar Excel
-                    </button>
-                </div>
+        <div id="schedule-container" class="mt-8">
             </div>
 
-            <!-- Contenedor del horario -->
-            <div id="schedule-container" class="fade-in"></div>
-
-        </div>
-
-        <!-- Footer -->
-        <div class="text-center mt-8 text-white/80">
-            <p class="text-sm"><b>Nota:</b> <i>"Código mejorado con ayuda de I.A"</i></p>
-            <p class="font-bold mt-1">-GOMLET-</p>
-        </div>
-    </div>
-
-    <!-- Modal de Alerta -->
-    <div id="alert-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm overflow-y-auto h-full w-full z-50 flex items-center justify-center p-4">
-        <div class="relative bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 transform transition-all">
-            <div class="text-center">
-                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-indigo-100 mb-4">
-                    <svg class="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
+        <div id="alert-modal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+            <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                <div class="mt-3 text-center">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900" id="alert-title"></h3>
+                    <div class="mt-2 px-7 py-3">
+                        <p class="text-sm text-gray-500" id="alert-message"></p>
+                    </div>
+                    <div class="items-center px-4 py-3">
+                        <button id="close-alert-btn" class="px-4 py-2 bg-indigo-600 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                            Cerrar
+                        </button>
+                    </div>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-2" id="alert-title"></h3>
-                <p class="text-sm text-gray-600 mb-6" id="alert-message"></p>
-                <button id="close-alert-btn" class="w-full px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all duration-300 shadow-md hover:shadow-lg">
-                    Cerrar
-                </button>
             </div>
         </div>
+        
+        <div class="text-center text-gray-500 text-xs mt-8">
+            <p><span class="font-bold">Nota:</span> <i>"Código corregido y mejorado con ayuda de I.A"</i></p>
+            <p class="font-bold">-GOMLET-</p>
+        </div>
+
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -244,6 +178,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+
+            // Referencias a elementos del DOM
             const daysContainer = document.getElementById('days-container');
             const addDayBtn = document.getElementById('add-day-btn');
             const teamsContainer = document.getElementById('teams-container');
@@ -256,184 +192,72 @@
             const exportExcelBtn = document.getElementById('export-excel-btn');
             const scheduleContainer = document.getElementById('schedule-container');
             const scheduleTitleEl = document.getElementById('schedule-title');
-            const monthSelect = document.getElementById('month-select');
-            const yearInput = document.getElementById('year-input');
+            const scheduleMonthEl = document.getElementById('schedule-month');
             const saveBackupBtn = document.getElementById('save-backup-btn');
             const loadBackupBtn = document.getElementById('load-backup-btn');
             const backupFileInput = document.getElementById('backup-file-input');
+            const clearDataBtn = document.getElementById('clear-data-btn');
+            const autofillDaysBtn = document.getElementById('autofill-days-btn');
+            const monthYearInput = document.getElementById('month-year-input');
+            const weekdaySelect = document.getElementById('weekday-select');
             const alertModal = document.getElementById('alert-modal');
             const alertTitle = document.getElementById('alert-title');
             const alertMessage = document.getElementById('alert-message');
             const closeAlertBtn = document.getElementById('close-alert-btn');
 
+            /**
+             * Muestra un modal de alerta personalizado.
+             * @param {string} title - El título de la alerta.
+             * @param {string} message - El mensaje de la alerta.
+             */
             function showAlert(title, message) {
                 alertTitle.textContent = title;
                 alertMessage.textContent = message;
                 alertModal.classList.remove('hidden');
             }
 
+            // Cierra el modal de alerta
             closeAlertBtn.addEventListener('click', () => {
                 alertModal.classList.add('hidden');
             });
-
-            // Establecer mes actual
-            const currentMonth = new Date().getMonth();
-            monthSelect.selectedIndex = currentMonth;
-
+            
+            // Lógica de botones
             addDayBtn.addEventListener('click', () => addDayRow());
             addTeamBtn.addEventListener('click', () => addTeamRow());
             addRestrictionBtn.addEventListener('click', () => addRestrictionRow());
-
-            function addDayRow(day = '', date = '') {
-                const row = document.createElement('div');
-                row.classList.add('flex', 'flex-col', 'sm:flex-row', 'gap-3', 'items-end', 'day-row', 'bg-gray-50', 'p-4', 'rounded-xl', 'border', 'border-gray-200');
-                row.innerHTML = `
-                    <div class="flex-1">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Día de la semana:</label>
-                        <input type="text" value="${day}" class="w-full p-3 border-2 border-gray-200 rounded-xl day-name-input input-field focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" placeholder="Ej. Miércoles">
-                    </div>
-                    <div class="flex-1">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Fecha del mes:</label>
-                        <input type="number" value="${date}" class="w-full p-3 border-2 border-gray-200 rounded-xl day-date-input input-field focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" placeholder="Ej. 3" min="1" max="31">
-                    </div>
-                    <button class="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200 remove-btn" aria-label="Eliminar día">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                    </button>
-                `;
-                daysContainer.appendChild(row);
-                row.querySelector('.remove-btn').addEventListener('click', () => {
-                    daysContainer.removeChild(row);
-                });
-            }
-
-            function getDaysFromInputs() {
-                const days = [];
-                const dayRows = daysContainer.querySelectorAll('.day-row');
-                dayRows.forEach(row => {
-                    const dayName = row.querySelector('.day-name-input').value.trim();
-                    const dayDate = parseInt(row.querySelector('.day-date-input').value.trim());
-                    if (dayName && !isNaN(dayDate)) {
-                        days.push({ day: dayName, date: dayDate });
-                    }
-                });
-                return days;
-            }
-
-            function addTeamRow(name = '', members = '') {
-                const row = document.createElement('div');
-                row.classList.add('bg-gradient-to-br', 'from-gray-50', 'to-gray-100', 'p-5', 'rounded-xl', 'border-2', 'border-gray-200', 'relative', 'shadow-sm', 'hover:shadow-md', 'transition-shadow', 'duration-300');
-                row.innerHTML = `
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Nombre del Equipo:</label>
-                            <input type="text" value="${name}" class="w-full p-3 border-2 border-gray-200 rounded-xl team-name-input input-field focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" placeholder="Ej. Audio">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Miembros (uno por línea):</label>
-                            <textarea rows="5" class="w-full p-3 border-2 border-gray-200 rounded-xl team-members-input input-field focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none resize-none" placeholder="Juan Pérez&#10;Mario López&#10;...">${members}</textarea>
-                        </div>
-                    </div>
-                    <button class="absolute top-3 right-3 p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200 remove-btn" aria-label="Eliminar equipo">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                    </button>
-                `;
-                teamsContainer.appendChild(row);
-                row.querySelector('.remove-btn').addEventListener('click', () => {
-                    teamsContainer.removeChild(row);
-                });
-            }
-
-            function getTeamsFromInputs() {
-                const teams = [];
-                const teamRows = teamsContainer.querySelectorAll('.bg-gradient-to-br');
-                teamRows.forEach(row => {
-                    const nameInput = row.querySelector('.team-name-input');
-                    const membersInput = row.querySelector('.team-members-input');
-                    const teamName = nameInput.value.trim();
-                    const members = membersInput.value.split('\n').map(name => name.trim()).filter(name => name);
-                    if (teamName && members.length > 0) {
-                        teams.push({ name: teamName, members: members });
-                    }
-                });
-                return teams;
-            }
-
-            function addRestrictionRow(name = '', days = '') {
-                const row = document.createElement('div');
-                row.classList.add('flex', 'flex-col', 'sm:flex-row', 'gap-3', 'items-end', 'bg-gray-50', 'p-4', 'rounded-xl', 'border', 'border-gray-200');
-                row.innerHTML = `
-                    <div class="flex-1">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Nombre Completo:</label>
-                        <input type="text" value="${name}" class="w-full p-3 border-2 border-gray-200 rounded-xl name-input input-field focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" placeholder="Antonio López">
-                    </div>
-                    <div class="flex-1">
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Días que no puede (ej: 6, 13):</label>
-                        <input type="text" value="${days}" class="w-full p-3 border-2 border-gray-200 rounded-xl days-input input-field focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" placeholder="3, 10, 17">
-                    </div>
-                    <button class="p-3 text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200 remove-btn" aria-label="Eliminar restricción">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                    </button>
-                `;
-                restrictionsContainer.appendChild(row);
-                row.querySelector('.remove-btn').addEventListener('click', () => {
-                    restrictionsContainer.removeChild(row);
-                });
-            }
-
-            function getRestrictionsFromInputs() {
-                const restrictions = {};
-                const restrictionRows = restrictionsContainer.querySelectorAll('.flex.flex-col.sm\\:flex-row.gap-3');
-                restrictionRows.forEach(row => {
-                    const nameInput = row.querySelector('.name-input');
-                    const daysInput = row.querySelector('.days-input');
-                    if (nameInput && daysInput) {
-                        const name = nameInput.value.trim();
-                        const daysStr = daysInput.value;
-                        if (name && daysStr) {
-                            const days = daysStr.split(',').map(d => parseInt(d.trim())).filter(d => !isNaN(d));
-                            restrictions[name] = days;
-                        }
-                    }
-                });
-                return restrictions;
-            }
+            autofillDaysBtn.addEventListener('click', autofillDays);
+            clearDataBtn.addEventListener('click', clearAllData);
 
             generateBtn.addEventListener('click', () => {
-                scheduleContainer.innerHTML = '';
+                scheduleContainer.innerHTML = ''; // Limpiar horario anterior
                 
+                // Obtener los datos del usuario
                 const teams = getTeamsFromInputs();
-                if (teams.length === 0) {
-                    showAlert('Error', 'Debes agregar al menos un equipo con miembros.');
-                    return;
-                }
-
                 const allTeamMembers = teams.flatMap(team => team.members);
                 const uniqueMembers = [...new Set(allTeamMembers)];
                 const restrictions = getRestrictionsFromInputs();
                 const rotationMembers = rotationListEl.value.split('\n').map(name => name.trim()).filter(name => name);
                 const specificDays = getDaysFromInputs();
+                const scheduleTitle = scheduleTitleEl.value || 'Horario Generado';
+                const scheduleMonth = scheduleMonthEl.value.trim(); // BUG FIX: Obtener el mes
                 
                 if (specificDays.length === 0) {
-                    showAlert('Error', 'Debes agregar al menos un día al horario.');
+                    showAlert('Error', 'Debes definir al menos un día en el Paso 1.');
+                    return;
+                }
+                if (teams.length === 0) {
+                    showAlert('Error', 'Debes definir al menos un equipo en el Paso 2.');
                     return;
                 }
 
-                const selectedMonth = monthSelect.value;
-                const selectedYear = yearInput.value;
-                const scheduleTitle = scheduleTitleEl.value || `Horario de ${selectedMonth} ${selectedYear}`;
+                // Generar el horario
+                const fullSchedule = generateCombinedSchedule(specificDays, teams, uniqueMembers, restrictions, rotationMembers);
                 
-                const fullSchedule = generateCombinedSchedule(specificDays, teams, uniqueMembers, restrictions, rotationMembers, selectedMonth, selectedYear);
-                renderSingleSchedule(fullSchedule, teams, scheduleTitle);
-                
-                showAlert('¡Éxito!', 'Horario generado correctamente. Puedes exportarlo a PDF o Excel.');
+                // Mostrar el horario en la página
+                renderSingleSchedule(fullSchedule, teams, scheduleTitle, scheduleMonth, restrictions);
             });
-
+            
+            // Lógica para exportar el horario a PDF
             exportPdfBtn.addEventListener('click', () => {
                 const scheduleElement = scheduleContainer.querySelector('div');
                 if (!scheduleElement) {
@@ -441,7 +265,7 @@
                     return;
                 }
                 
-                const buttonsDiv = document.querySelector('.flex.flex-wrap.gap-3');
+                const buttonsDiv = document.querySelector('button#generate-btn').parentElement;
                 const originalDisplay = buttonsDiv.style.display;
                 buttonsDiv.style.display = 'none';
 
@@ -471,9 +295,10 @@
                         doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
                         heightLeft -= pageHeight;
                     }
-
-                    doc.save('horario-generado.pdf');
-                    showAlert('¡Éxito!', 'Horario exportado a PDF correctamente.');
+                    
+                    const title = (scheduleTitleEl.value.trim() || 'horario_generado') + '.pdf';
+                    doc.save(title);
+                    showAlert('Éxito', '¡Horario exportado a PDF correctamente!');
                 }).catch(error => {
                     console.error("Error al generar PDF:", error);
                     buttonsDiv.style.display = originalDisplay;
@@ -481,27 +306,218 @@
                 });
             });
 
+            // Lógica para exportar el horario a Excel
             exportExcelBtn.addEventListener('click', () => {
                 const scheduleTable = scheduleContainer.querySelector('table');
                 if (scheduleTable) {
                     const ws = XLSX.utils.table_to_sheet(scheduleTable, { cellDates: false, raw: true });
                     const wb = XLSX.utils.book_new();
                     XLSX.utils.book_append_sheet(wb, ws, "Horario");
-                    const title = scheduleTitleEl.value.trim() || 'horario_generado';
-                    XLSX.writeFile(wb, `${title}.xlsx`);
-                    showAlert('¡Éxito!', 'Horario exportado a Excel correctamente.');
+                    const title = (scheduleTitleEl.value.trim() || 'horario_generado') + '.xlsx';
+                    XLSX.writeFile(wb, title);
+                    showAlert('Éxito', '¡Horario exportado a Excel correctamente!');
                 } else {
                     showAlert('Error', 'Primero, genera un horario para poder exportar a Excel.');
                 }
             });
 
-            function generateCombinedSchedule(days, teams, allMembers, restrictions, rotationMembers, month, year) {
-                const fullSchedule = {};
-                const assignmentCounts = {};
+
+            /**
+             * Agrega una nueva fila de entrada de día a la UI.
+             * @param {string} [day=''] - Nombre del día.
+             * @param {number} [date=''] - Fecha del día.
+             */
+            function addDayRow(day = '', date = '') {
+                const row = document.createElement('div');
+                row.classList.add('flex', 'flex-col', 'sm:flex-row', 'gap-4', 'items-center', 'day-row', 'p-2', 'border', 'rounded-lg', 'bg-gray-50');
+                row.innerHTML = `
+                    <div class="w-full sm:w-1/2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Día de la semana:</label>
+                        <input type="text" value="${day}" class="w-full p-2 border rounded-lg day-name-input bg-white text-gray-800 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej. Miércoles">
+                    </div>
+                    <div class="w-full sm:w-1/2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Fecha del mes:</label>
+                        <input type="number" value="${date}" class="w-full p-2 border rounded-lg day-date-input bg-white text-gray-800 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej. 3">
+                    </div>
+                    <button class="text-gray-400 hover:text-red-500 transition duration-200 remove-btn mt-6 sm:mt-0" aria-label="Eliminar día">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </button>
+                `;
+                daysContainer.appendChild(row);
+
+                row.querySelector('.remove-btn').addEventListener('click', () => {
+                    daysContainer.removeChild(row);
+                });
+            }
+
+            /**
+             * Obtiene los días y sus fechas desde los campos de entrada de la UI.
+             * @returns {Object[]} - Un array de objetos con el día de la semana y la fecha.
+             */
+            function getDaysFromInputs() {
+                const days = [];
+                const dayRows = daysContainer.querySelectorAll('.day-row');
+                dayRows.forEach(row => {
+                    const dayName = row.querySelector('.day-name-input').value.trim();
+                    const dayDate = parseInt(row.querySelector('.day-date-input').value.trim());
+                    if (dayName && !isNaN(dayDate)) {
+                        days.push({ day: dayName, date: dayDate });
+                    }
+                });
+                return days.sort((a, b) => a.date - b.date); // Ordenar por fecha
+            }
+
+            /**
+             * NUEVA FUNCIÓN: Autocompleta los días del mes.
+             */
+            function autofillDays() {
+                const monthYearStr = monthYearInput.value.trim();
+                const weekdayIndex = parseInt(weekdaySelect.value);
+
+                if (!monthYearStr) {
+                    showAlert('Error', 'Por favor, ingresa un mes y año (ej: Diciembre 2025).');
+                    return;
+                }
+
+                const monthNames = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+                const parts = monthYearStr.split(' ');
+                const monthName = parts[0] ? parts[0].toLowerCase() : '';
+                const year = parseInt(parts[1]);
+                const month = monthNames.indexOf(monthName);
+
+                if (month === -1 || isNaN(year) || year < 2000 || year > 3000) {
+                    showAlert('Error', 'Formato de fecha no válido. Usa "Mes Año", ej: "Diciembre 2025".');
+                    return;
+                }
+
+                daysContainer.innerHTML = ''; // Limpiar días existentes
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                const weekdayNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const date = new Date(year, month, d);
+                    if (date.getDay() === weekdayIndex) {
+                        addDayRow(weekdayNames[weekdayIndex], d);
+                    }
+                }
+                showAlert('Éxito', `Se han agregado todos los ${weekdayNames[weekdayIndex]}s de ${monthYearStr}.`);
+            }
+
+            /**
+             * Agrega una nueva fila de entrada de equipo a la UI.
+             * @param {string} [name=''] - Nombre del equipo.
+             * @param {string} [members=''] - Miembros del equipo.
+             */
+            function addTeamRow(name = '', members = '') {
+                const row = document.createElement('div');
+                row.classList.add('flex', 'flex-col', 'gap-4', 'p-4', 'border', 'rounded-lg', 'bg-gray-50', 'relative', 'shadow-sm', 'border-gray-200');
+                row.innerHTML = `
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre del Equipo:</label>
+                        <input type="text" value="${name}" class="w-full p-2 border rounded-lg team-name-input bg-white text-gray-800 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Ej. Audio">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Miembros (uno por línea):</label>
+                        <textarea rows="6" class="w-full p-2 border rounded-lg team-members-input bg-white text-gray-800 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Juan Pérez&#10;Mario López&#10;...">${members}</textarea>
+                    </div>
+                    <button class="absolute top-2 right-2 text-gray-400 hover:text-red-500 transition duration-200 remove-btn" aria-label="Eliminar equipo">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </button>
+                `;
+                teamsContainer.appendChild(row);
+
+                row.querySelector('.remove-btn').addEventListener('click', () => {
+                    teamsContainer.removeChild(row);
+                });
+            }
+
+            /**
+             * Obtiene los equipos y sus miembros desde los campos de entrada de la UI.
+             * @returns {Object[]} - Un array de objetos con el nombre del equipo y sus miembros.
+             */
+            function getTeamsFromInputs() {
+                const teams = [];
+                const teamRows = teamsContainer.querySelectorAll('.flex.flex-col');
+                teamRows.forEach(row => {
+                    const nameInput = row.querySelector('.team-name-input');
+                    const membersInput = row.querySelector('.team-members-input');
+                    const teamName = nameInput.value.trim();
+                    const members = membersInput.value.split('\n').map(name => name.trim()).filter(name => name);
+                    if (teamName && members.length > 0) {
+                        teams.push({ name: teamName, members: members });
+                    }
+                });
+                return teams;
+            }
+
+            /**
+             * Agrega una nueva fila de entrada de restricción a la UI.
+             * @param {string} [name=''] - Nombre de la persona para la fila de ejemplo.
+             * @param {string} [days=''] - Días de restricción para la fila de ejemplo.
+             */
+            function addRestrictionRow(name = '', days = '') {
+                const row = document.createElement('div');
+                row.classList.add('flex', 'flex-col', 'sm:flex-row', 'gap-4', 'items-center', 'restriction-row');
+                row.innerHTML = `
+                    <div class="w-full sm:w-1/2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre Completo:</label>
+                        <input type="text" value="${name}" class="w-full p-2 border rounded-lg name-input bg-gray-50 text-gray-800 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500" placeholder="Antonio López">
+                    </div>
+                    <div class="w-full sm:w-1/2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Días que no puede (ej: 6, 13):</label>
+                        <input type="text" value="${days}" class="w-full p-2 border rounded-lg days-input bg-gray-50 text-gray-800 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500" placeholder="3, 10, 17">
+                    </div>
+                    <button class="text-gray-400 hover:text-red-500 transition duration-200 remove-btn mt-6 sm:mt-0" aria-label="Eliminar restricción">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </button>
+                `;
+                restrictionsContainer.appendChild(row);
+
+                row.querySelector('.remove-btn').addEventListener('click', () => {
+                    restrictionsContainer.removeChild(row);
+                });
+            }
+
+            /**
+             * Obtiene las restricciones de los campos de entrada de la UI.
+             * @returns {Object.<string, number[]>} - Un objeto con los nombres y los días restringidos.
+             */
+            function getRestrictionsFromInputs() {
+                const restrictions = {};
+                const restrictionRows = restrictionsContainer.querySelectorAll('.restriction-row');
+                restrictionRows.forEach(row => {
+                    const nameInput = row.querySelector('.name-input');
+                    const daysInput = row.querySelector('.days-input');
+                    const name = nameInput.value.trim();
+                    const daysStr = daysInput.value;
+                    if (name && daysStr) {
+                        const days = daysStr.split(',').map(d => parseInt(d.trim())).filter(d => !isNaN(d));
+                        restrictions[name] = days;
+                    }
+                });
+                return restrictions;
+            }
+
+            /**
+             * Genera un horario combinado.
+             * REFACTORIZADO: Devuelve un array de objetos para mejor manejo de datos.
+             * MEJORADO: Intenta evitar asignaciones consecutivas al mismo equipo.
+             */
+            function generateCombinedSchedule(days, teams, allMembers, restrictions, rotationMembers) {
+                const fullSchedule = [];
+                const assignmentCounts = {}; // Registro de cuántas veces se ha asignado a cada miembro
                 allMembers.forEach(member => {
                     assignmentCounts[member] = 0;
                 });
-    
+                
+                let previousDayAssignments = {}; // Para evitar asignaciones consecutivas
+
                 days.forEach(dayInfo => {
                     const availableMembers = allMembers.filter(member => {
                         return !(restrictions[member] && restrictions[member].includes(dayInfo.date));
@@ -515,73 +531,109 @@
     
                     shuffledTeams.forEach(team => {
                         dayAssignments[team.name] = 'Sin asignar';
+                        
+                        const previousAssignee = previousDayAssignments[team.name]; // Quien estuvo ayer en este equipo
     
                         const teamCandidates = team.members.filter(member =>
                             availableMembers.includes(member) &&
                             !assignedForToday.includes(member)
                         );
     
-                        const candidates = teamCandidates.sort((a, b) => {
+                        // Ordenar por conteo de asignaciones
+                        const sortedCandidates = teamCandidates.sort((a, b) => {
                             const isArotation = rotationMembers.includes(a);
                             const isBrotation = rotationMembers.includes(b);
-    
                             if (isArotation === isBrotation) {
                                 return assignmentCounts[a] - assignmentCounts[b];
                             }
-                            
                             return isArotation ? 1 : -1;
                         });
-    
-                        if (candidates.length > 0) {
-                            const selectedMember = candidates[0];
+
+                        // Intentar filtrar al que estuvo ayer
+                        const finalCandidates = sortedCandidates.filter(member => member !== previousAssignee);
+                        
+                        let selectedMember;
+                        if (finalCandidates.length > 0) {
+                            selectedMember = finalCandidates[0]; // Elegir al primero que no estuvo ayer
+                        } else if (sortedCandidates.length > 0) {
+                            selectedMember = sortedCandidates[0]; // Fallback: elegir al que tiene menos turnos, aunque repita
+                        }
+
+                        if (selectedMember) {
                             dayAssignments[team.name] = selectedMember;
                             assignedForToday.push(selectedMember);
                             assignmentCounts[selectedMember]++;
                         }
                     });
     
-                    fullSchedule[`${dayInfo.day} ${dayInfo.date} ${month} ${year}`] = dayAssignments;
+                    fullSchedule.push({
+                        day: dayInfo.day,
+                        date: dayInfo.date,
+                        assignments: dayAssignments
+                    });
+
+                    previousDayAssignments = { ...dayAssignments }; // Guardar para la próxima iteración
                 });
     
                 return fullSchedule;
             }
             
-            function renderSingleSchedule(schedule, teams, scheduleTitle) {
-                if (Object.keys(schedule).length === 0) return;
+            /**
+             * Renderiza un único horario en la página como una tabla.
+             * REFACTORIZADO: Acepta el array de horario y el mes.
+             * MEJORADO: Resalta los conflictos.
+             */
+            function renderSingleSchedule(schedule, teams, scheduleTitle, scheduleMonth, restrictions) {
+                if (schedule.length === 0) return;
                 
                 const teamNames = teams.map(t => t.name);
 
                 let html = `
-                    <div class="bg-white p-6 rounded-2xl border-2 border-green-200 shadow-lg">
-                        <h2 class="text-3xl font-bold text-gray-800 text-center mb-6 pb-4 border-b-2 border-gray-200">${scheduleTitle}</h2>
+                    <div class="mb-8 p-4 bg-white rounded-xl border border-gray-200 shadow-md">
+                        <h2 class="text-2xl font-bold text-gray-800 text-center mb-4">${scheduleTitle}</h2>
                         <div class="overflow-x-auto">
-                            <table class="min-w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
-                                        <th class="p-4 text-sm font-bold tracking-wide">FECHAS</th>
-                                        ${teamNames.map(name => `<th class="p-4 text-sm font-bold tracking-wide">${name.toUpperCase()}</th>`).join('')}
+                            <table class="min-w-full text-left table-auto border-collapse">
+                                <thead class="bg-gray-100">
+                                    <tr>
+                                        <th class="p-3 text-sm font-semibold tracking-wide text-gray-800">FECHAS</th>
+                                        ${teamNames.map(name => `<th class="p-3 text-sm font-semibold tracking-wide text-gray-800">${name.toUpperCase()}</th>`).join('')}
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${Object.keys(schedule).map((day, index) => `
-                                        <tr class="${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-indigo-50 transition-colors duration-200">
-                                            <td class="p-4 text-sm font-bold text-gray-800 border-b border-gray-200">${day}</td>
-                                            ${teamNames.map(name => `<td class="p-4 text-sm text-gray-700 border-b border-gray-200">${schedule[day][name]}</td>`).join('')}
+                                    ${schedule.map((dayData, index) => {
+                                        // BUG FIX: Construir la fecha usando el mes (si existe)
+                                        const dayDisplay = scheduleMonth 
+                                            ? `${dayData.day} ${dayData.date} de ${scheduleMonth}`
+                                            : `${dayData.day} ${dayData.date}`;
+
+                                        return `
+                                        <tr class="${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} border-b border-gray-200">
+                                            <td class="p-3 text-sm text-gray-700 font-bold">${dayDisplay}</td>
+                                            ${teamNames.map(name => {
+                                                const personName = dayData.assignments[name];
+                                                const dayDate = dayData.date;
+                                                
+                                                // NUEVA FUNCIÓN: Resaltar conflictos
+                                                let cellClass = 'p-3 text-sm text-gray-700';
+                                                if (restrictions[personName] && restrictions[personName].includes(dayDate)) {
+                                                    cellClass += ' bg-red-200 text-red-900 font-bold';
+                                                }
+
+                                                return `<td class="${cellClass}">${personName}</td>`;
+                                            }).join('')}
                                         </tr>
-                                    `).join('')}
+                                    `}).join('')}
                                 </tbody>
                             </table>
-                        </div>
-                        <div class="mt-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
-                            <p class="text-sm text-gray-600 text-center">
-                                ✨ Horario generado con distribución equitativa de cargas
-                            </p>
                         </div>
                     </div>
                 `;
                 scheduleContainer.innerHTML = html;
             }
             
+            /**
+             * Mezcla un array (Fisher-Yates shuffle).
+             */
             function randomShuffle(array) {
                 let currentIndex = array.length, randomIndex;
                 while (currentIndex !== 0) {
@@ -592,20 +644,14 @@
                 return array;
             }
 
+            // --- COPIA DE SEGURIDAD ---
+            
             function downloadBackup() {
-                const teams = getTeamsFromInputs();
-                const restrictions = getRestrictionsFromInputs();
-                const rotationList = rotationListEl.value;
-                const days = getDaysFromInputs();
-                const month = monthSelect.value;
-                const year = yearInput.value;
                 const backupData = {
-                    teams,
-                    restrictions,
-                    rotationList,
-                    days,
-                    month,
-                    year
+                    teams: getTeamsFromInputs(),
+                    restrictions: getRestrictionsFromInputs(),
+                    rotationList: rotationListEl.value,
+                    days: getDaysFromInputs()
                 };
                 
                 const dataStr = JSON.stringify(backupData, null, 2);
@@ -614,13 +660,12 @@
                 
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `horario-backup-${month}-${year}.json`;
+                a.download = 'horario-backup.json';
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
-
-                showAlert('Copia de Seguridad', `Datos guardados exitosamente. Se ha descargado el archivo "horario-backup-${month}-${year}.json".`);
+                showAlert('Copia de Seguridad', 'Datos guardados en "horario-backup.json".');
             }
 
             function loadBackupFromFile(file) {
@@ -634,11 +679,11 @@
                     try {
                         const backupData = JSON.parse(event.target.result);
                         if (backupData && backupData.teams && backupData.restrictions) {
+                            // Limpiar y cargar
                             teamsContainer.innerHTML = '';
                             backupData.teams.forEach(team => addTeamRow(team.name, team.members.join('\n')));
 
-                            restrictionsContainer.innerHTML = '';
-                            restrictionsContainer.innerHTML = '<p class="text-sm text-gray-600 bg-blue-50 p-3 rounded-lg border border-blue-200">📅 Agrega los días en que cada persona no está disponible</p>';
+                            restrictionsContainer.innerHTML = '<p class="text-sm text-gray-600">Haz clic en "Agregar Restricción" para añadir días no disponibles por persona.</p>';
                             Object.keys(backupData.restrictions).forEach(member => {
                                 addRestrictionRow(member, backupData.restrictions[member].join(', '));
                             });
@@ -649,31 +694,45 @@
                             if (backupData.days && backupData.days.length > 0) {
                                 backupData.days.forEach(day => addDayRow(day.day, day.date));
                             } else {
-                                addDayRow();
+                                addDayRow('');
                             }
 
-                            if (backupData.month) {
-                                monthSelect.value = backupData.month;
-                            }
-                            if (backupData.year) {
-                                yearInput.value = backupData.year;
-                            }
-
-                            showAlert('Copia de Seguridad', 'Datos cargados exitosamente desde el archivo.');
+                            showAlert('Copia de Seguridad', '¡Datos cargados exitosamente!');
                         } else {
                             showAlert('Error', 'El archivo no tiene un formato de respaldo válido.');
                         }
                     } catch (e) {
                         console.error('Error al procesar el archivo:', e);
-                        showAlert('Error', 'Hubo un problema al leer el archivo. Asegúrate de que es un archivo de respaldo válido.');
+                        showAlert('Error', 'Hubo un problema al leer el archivo.');
                     }
                 };
-                reader.onerror = () => {
-                    showAlert('Error', 'No se pudo leer el archivo.');
-                };
+                reader.onerror = () => showAlert('Error', 'No se pudo leer el archivo.');
                 reader.readAsText(file);
             }
 
+            /**
+             * NUEVA FUNCIÓN: Limpia todos los datos del formulario.
+             */
+            function clearAllData() {
+                if (confirm('¿Estás seguro de que quieres borrar todos los datos? Esta acción no se puede deshacer.')) {
+                    daysContainer.innerHTML = '';
+                    teamsContainer.innerHTML = '';
+                    restrictionsContainer.innerHTML = '<p class="text-sm text-gray-600">Haz clic en "Agregar Restricción" para añadir días no disponibles por persona.</p>';
+                    rotationListEl.value = '';
+                    scheduleContainer.innerHTML = '';
+                    scheduleTitleEl.value = '';
+                    scheduleMonthEl.value = '';
+                    monthYearInput.value = '';
+                    
+                    // Añadir filas de ejemplo vacías
+                    addDayRow('');
+                    addTeamRow();
+
+                    showAlert('Éxito', 'Todos los datos han sido borrados.');
+                }
+            }
+
+            // Asignar eventos a los botones de copia de seguridad
             saveBackupBtn.addEventListener('click', downloadBackup);
             
             loadBackupBtn.addEventListener('click', () => {
@@ -683,10 +742,15 @@
             backupFileInput.addEventListener('change', (event) => {
                 const file = event.target.files[0];
                 loadBackupFromFile(file);
+                event.target.value = null; // Resetear el input
             });
 
+            // Llenar con datos de ejemplo vacíos
             if (daysContainer.children.length === 0) {
-                addDayRow();
+                addDayRow(''); 
+            }
+            if (teamsContainer.children.length === 0) {
+                addTeamRow();
             }
         });
     </script>
