@@ -60,12 +60,18 @@
                     <h2 class="text-2xl font-semibold text-gray-900 mb-4">Paso 1: Define los días</h2>
                     
                     <div class="grid grid-cols-1 gap-4 mb-4 p-4 bg-gray-50 rounded-lg border">
-                        <div>
-                            <label for="date-picker-input" class="block text-sm font-medium text-gray-700 mb-1">Selecciona una fecha del calendario:</label>
-                            <input type="date" id="date-picker-input" class="w-full p-2 border rounded-lg bg-white text-gray-800 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500">
+                        <div class="flex items-center gap-4">
+                            <button id="open-date-picker-btn" class="flex-shrink-0 px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                                <svg class="h-5 w-5 inline-block mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12v-.008zM15 12h.008v.008H15v-.008zM15 15h.008v.008H15v-.008zM9 12h.008v.008H9v-.008zM9 15h.008v.008H9v-.008z" />
+                                </svg>
+                                Seleccionar Fecha
+                            </button>
+                            <input type="date" id="date-picker-input" class="hidden">
+                            <p id="selected-date-display" class="text-gray-700 text-sm flex-grow">Aún no se ha seleccionado ninguna fecha.</p>
                         </div>
                         <button id="add-selected-date-btn" class="mt-2 px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition duration-200">
-                            Agregar Fecha al Horario
+                            Agregar al Listado de Días
                         </button>
                     </div>
                     <p class="text-sm text-gray-600 mb-4 text-center">Días Seleccionados para el Horario:</p>
@@ -165,7 +171,6 @@
 
             // Referencias a elementos del DOM
             const daysContainer = document.getElementById('days-container');
-            // const addDayBtn = document.getElementById('add-day-btn'); // REMOVED: manual button is gone
             const teamsContainer = document.getElementById('teams-container');
             const addTeamBtn = document.getElementById('add-team-btn');
             const rotationListEl = document.getElementById('rotation-list');
@@ -185,6 +190,8 @@
             // NUEVAS REFERENCIAS DE CALENDARIO
             const datePickerInput = document.getElementById('date-picker-input'); 
             const addSelectedDateBtn = document.getElementById('add-selected-date-btn'); 
+            const openDatePickerBtn = document.getElementById('open-date-picker-btn'); 
+            const selectedDateDisplay = document.getElementById('selected-date-display'); 
             
             const alertModal = document.getElementById('alert-modal');
             const alertTitle = document.getElementById('alert-title');
@@ -208,105 +215,42 @@
             });
             
             // Lógica de botones
-            // addDayBtn.addEventListener('click', () => addDayRow()); // REMOVED
             addTeamBtn.addEventListener('click', () => addTeamRow());
             addRestrictionBtn.addEventListener('click', () => addRestrictionRow());
-            // autofillDaysBtn.addEventListener('click', autofillDays); // REMOVED
             addSelectedDateBtn.addEventListener('click', addSelectedDate); // NUEVA LÓGICA DE CALENDARIO
             clearDataBtn.addEventListener('click', clearAllData);
-
-            generateBtn.addEventListener('click', () => {
-                scheduleContainer.innerHTML = ''; // Limpiar horario anterior
-                
-                // Obtener los datos del usuario
-                const teams = getTeamsFromInputs();
-                const allTeamMembers = teams.flatMap(team => team.members);
-                const uniqueMembers = [...new Set(allTeamMembers)];
-                const restrictions = getRestrictionsFromInputs();
-                const rotationMembers = rotationListEl.value.split('\n').map(name => name.trim()).filter(name => name);
-                const specificDays = getDaysFromInputs();
-                const scheduleTitle = scheduleTitleEl.value || 'Horario Generado';
-                const scheduleMonth = scheduleMonthEl.value.trim(); // BUG FIX: Obtener el mes
-                
-                if (specificDays.length === 0) {
-                    showAlert('Error', 'Debes definir al menos un día en el Paso 1.');
-                    return;
-                }
-                if (teams.length === 0) {
-                    showAlert('Error', 'Debes definir al menos un equipo en el Paso 2.');
-                    return;
-                }
-
-                // Generar el horario
-                const fullSchedule = generateCombinedSchedule(specificDays, teams, uniqueMembers, restrictions, rotationMembers);
-                
-                // Mostrar el horario en la página
-                renderSingleSchedule(fullSchedule, teams, scheduleTitle, scheduleMonth, restrictions);
+            
+            // LÓGICA NUEVA PARA EL CALENDARIO
+            // Al hacer clic en el botón, se abre el selector de fecha oculto
+            openDatePickerBtn.addEventListener('click', () => {
+                datePickerInput.click();
             });
             
-            // Lógica para exportar el horario a PDF
-            exportPdfBtn.addEventListener('click', () => {
-                const scheduleElement = scheduleContainer.querySelector('div');
-                if (!scheduleElement) {
-                    showAlert('Error', 'Primero, genera un horario para poder exportarlo.');
-                    return;
-                }
-                
-                const buttonsDiv = document.querySelector('button#generate-btn').parentElement;
-                const originalDisplay = buttonsDiv.style.display;
-                buttonsDiv.style.display = 'none';
+            // Al cambiar la fecha en el input oculto, actualizar el texto de visualización
+            datePickerInput.addEventListener('change', updateSelectedDateDisplay);
 
-                html2canvas(scheduleElement, {
-                    scale: 2,
-                    useCORS: true,
-                    backgroundColor: '#ffffff',
-                }).then(canvas => {
-                    buttonsDiv.style.display = originalDisplay;
-                    
-                    const { jsPDF } = window.jspdf;
-                    const imgData = canvas.toDataURL('image/png');
-                    const doc = new jsPDF('p', 'mm', 'a4');
-                    
-                    const imgWidth = 210;
-                    const pageHeight = 297;
-                    const imgHeight = canvas.height * imgWidth / canvas.width;
-                    let heightLeft = imgHeight;
-                    let position = 0;
-                    
-                    doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                    
-                    while (heightLeft >= 0) {
-                        position = heightLeft - imgHeight;
-                        doc.addPage();
-                        doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                        heightLeft -= pageHeight;
+            /**
+             * Actualiza el texto con la fecha seleccionada.
+             */
+            function updateSelectedDateDisplay() {
+                const dateValue = datePickerInput.value;
+                if (dateValue) {
+                    try {
+                        // Se usa .replace(/-/g, '/') para asegurar la interpretación de la fecha local.
+                        const date = new Date(dateValue.replace(/-/g, '/')); 
+                        
+                        const weekdayNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+                        const dayName = weekdayNames[date.getDay()];
+                        const dayDate = date.getDate();
+                        const month = date.toLocaleString('es-ES', { month: 'long' });
+                        selectedDateDisplay.textContent = `Fecha seleccionada: ${dayName}, ${dayDate} de ${month}`;
+                    } catch (e) {
+                        selectedDateDisplay.textContent = 'Fecha no válida.';
                     }
-                    
-                    const title = (scheduleTitleEl.value.trim() || 'horario_generado') + '.pdf';
-                    doc.save(title);
-                    showAlert('Éxito', '¡Horario exportado a PDF correctamente!');
-                }).catch(error => {
-                    console.error("Error al generar PDF:", error);
-                    buttonsDiv.style.display = originalDisplay;
-                    showAlert('Error', 'Ocurrió un error al generar el PDF.');
-                });
-            });
-
-            // Lógica para exportar el horario a Excel
-            exportExcelBtn.addEventListener('click', () => {
-                const scheduleTable = scheduleContainer.querySelector('table');
-                if (scheduleTable) {
-                    const ws = XLSX.utils.table_to_sheet(scheduleTable, { cellDates: false, raw: true });
-                    const wb = XLSX.utils.book_new();
-                    XLSX.utils.book_append_sheet(wb, ws, "Horario");
-                    const title = (scheduleTitleEl.value.trim() || 'horario_generado') + '.xlsx';
-                    XLSX.writeFile(wb, title);
-                    showAlert('Éxito', '¡Horario exportado a Excel correctamente!');
                 } else {
-                    showAlert('Error', 'Primero, genera un horario para poder exportar a Excel.');
+                    selectedDateDisplay.textContent = 'Aún no se ha seleccionado ninguna fecha.';
                 }
-            });
+            }
 
 
             /**
@@ -362,13 +306,12 @@
             function addSelectedDate() {
                 const dateValue = datePickerInput.value;
                 if (!dateValue) {
-                    showAlert('Error', 'Por favor, selecciona una fecha del calendario.');
+                    showAlert('Error', 'Por favor, selecciona una fecha del calendario antes de agregar.');
                     return;
                 }
 
                 try {
-                    // La conversión a new Date() puede tener problemas de zona horaria con la entrada 'YYYY-MM-DD'.
-                    // Se usa .replace(/-/g, '/') para forzar la interpretación de la fecha local.
+                    // Se usa .replace(/-/g, '/') para asegurar la interpretación de la fecha local.
                     const date = new Date(dateValue.replace(/-/g, '/')); 
                     
                     if (isNaN(date.getTime())) {
@@ -390,8 +333,11 @@
                     }
                     
                     addDayRow(dayName, dayDate);
-                    // Limpiar el input de fecha después de la adición
+                    
+                    // Limpiar el input de fecha y la visualización después de la adición
                     datePickerInput.value = '';
+                    updateSelectedDateDisplay();
+                    
                     showAlert('Éxito', `Día ${dayName} ${dayDate} agregado correctamente.`);
 
                 } catch (e) {
@@ -741,7 +687,9 @@
             if (teamsContainer.children.length === 0) {
                 addTeamRow();
             }
-            // Eliminado: La adición inicial de addDayRow('');
+            
+            // Inicializar el display de la fecha
+            updateSelectedDateDisplay();
         });
     </script>
 </body>
