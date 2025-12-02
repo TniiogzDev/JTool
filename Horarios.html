@@ -216,7 +216,7 @@
                     locale: "es", // Usar idioma español
                     dateFormat: "Y-m-d", // Formato interno para JS
                     inline: false, // Asegurar que sea emergente
-                    mode: "multiple", // <-- CAMBIO CLAVE: HABILITA SELECCIÓN MÚLTIPLE
+                    mode: "multiple", // HABILITA SELECCIÓN MÚLTIPLE
                     onChange: function(selectedDates, dateStr, instance) {
                         // Cuando se selecciona una fecha en el calendario
                         updateSelectedDateDisplay(selectedDates);
@@ -475,6 +475,44 @@
                 });
                 return restrictions;
             }
+
+            // --- LÓGICA DEL BOTÓN GENERAR HORARIO (CORREGIDA) ---
+            generateBtn.addEventListener('click', () => {
+                scheduleContainer.innerHTML = ''; // Limpiar horario anterior
+                
+                // Obtener los datos del usuario
+                const teams = getTeamsFromInputs();
+                const allTeamMembers = teams.flatMap(team => team.members);
+                const uniqueMembers = [...new Set(allTeamMembers)];
+                const restrictions = getRestrictionsFromInputs();
+                const rotationMembers = rotationListEl.value.split('\n').map(name => name.trim()).filter(name => name);
+                const specificDays = getDaysFromInputs();
+                const scheduleTitle = scheduleTitleEl.value || 'Horario Generado';
+                const scheduleMonth = scheduleMonthEl.value.trim(); 
+                
+                // --- VALIDACIÓN DE DATOS ---
+                if (specificDays.length === 0) {
+                    showAlert('Error', 'Debes definir al menos un día en el Paso 1. Usa el botón "Seleccionar Fecha" y luego "Agregar al Listado de Días".');
+                    return;
+                }
+                if (teams.length === 0 || teams.every(t => t.members.length === 0)) {
+                    showAlert('Error', 'Debes definir al menos un equipo con miembros en el Paso 2.');
+                    return;
+                }
+                // --- FIN VALIDACIÓN ---
+
+                try { 
+                    // Generar el horario
+                    const fullSchedule = generateCombinedSchedule(specificDays, teams, uniqueMembers, restrictions, rotationMembers);
+                    
+                    // Mostrar el horario en la página
+                    renderSingleSchedule(fullSchedule, teams, scheduleTitle, scheduleMonth, restrictions);
+                } catch (error) { 
+                    console.error("Error al generar o renderizar el horario:", error);
+                    showAlert('Error Fatal', 'Ocurrió un error inesperado al generar el horario. Revisa si tus datos de equipos, miembros y restricciones están completos y son válidos.');
+                }
+            });
+
 
             /**
              * Genera un horario combinado.
