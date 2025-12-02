@@ -8,10 +8,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
     <style>
         body {
             font-family: 'Noto Sans', sans-serif;
             background-color: #f3f4f6; /* Fondo gris claro de Tailwind */
+        }
+        /* Estilos personalizados para asegurar que el input de Flatpickr no sea visible */
+        #date-picker-input-flatpickr {
+            position: absolute;
+            left: -9999px; /* Mueve el input fuera de la pantalla */
         }
     </style>
 </head>
@@ -67,13 +76,14 @@
                                 </svg>
                                 Seleccionar Fecha
                             </button>
-                            <input type="date" id="date-picker-input" class="hidden">
+                            <input type="date" id="date-picker-input-flatpickr" class="hidden">
                             <p id="selected-date-display" class="text-gray-700 text-sm flex-grow">Aún no se ha seleccionado ninguna fecha.</p>
                         </div>
                         <button id="add-selected-date-btn" class="mt-2 px-4 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-lg hover:bg-indigo-700 transition duration-200">
                             Agregar al Listado de Días
                         </button>
                     </div>
+                    
                     <p class="text-sm text-gray-600 mb-4 text-center">Días Seleccionados para el Horario:</p>
                     
                     <div id="days-container" class="space-y-4">
@@ -187,8 +197,8 @@
             const backupFileInput = document.getElementById('backup-file-input');
             const clearDataBtn = document.getElementById('clear-data-btn');
             
-            // NUEVAS REFERENCIAS DE CALENDARIO
-            const datePickerInput = document.getElementById('date-picker-input'); 
+            // NUEVAS REFERENCIAS DE CALENDARIO (Ahora con Flatpickr)
+            const datePickerInput = document.getElementById('date-picker-input-flatpickr'); 
             const addSelectedDateBtn = document.getElementById('add-selected-date-btn'); 
             const openDatePickerBtn = document.getElementById('open-date-picker-btn'); 
             const selectedDateDisplay = document.getElementById('selected-date-display'); 
@@ -197,6 +207,24 @@
             const alertTitle = document.getElementById('alert-title');
             const alertMessage = document.getElementById('alert-message');
             const closeAlertBtn = document.getElementById('close-alert-btn');
+
+            let flatpickrInstance;
+            
+            // --- INICIALIZACIÓN DE FLATPCKR ---
+            function initializeFlatpickr() {
+                flatpickrInstance = flatpickr("#date-picker-input-flatpickr", {
+                    locale: "es", // Usar idioma español
+                    dateFormat: "Y-m-d", // Formato interno para JS
+                    inline: false, // Asegurar que sea emergente
+                    onChange: function(selectedDates, dateStr, instance) {
+                        // Cuando se selecciona una fecha en el calendario
+                        if (selectedDates.length > 0) {
+                            updateSelectedDateDisplay(selectedDates[0]);
+                        }
+                    }
+                });
+            }
+            initializeFlatpickr();
 
             /**
              * Muestra un modal de alerta personalizado.
@@ -217,32 +245,28 @@
             // Lógica de botones
             addTeamBtn.addEventListener('click', () => addTeamRow());
             addRestrictionBtn.addEventListener('click', () => addRestrictionRow());
-            addSelectedDateBtn.addEventListener('click', addSelectedDate); // NUEVA LÓGICA DE CALENDARIO
+            addSelectedDateBtn.addEventListener('click', addSelectedDate); 
             clearDataBtn.addEventListener('click', clearAllData);
             
-            // LÓGICA NUEVA PARA EL CALENDARIO
-            // Al hacer clic en el botón, se abre el selector de fecha oculto
+            // LÓGICA DEL CALENDARIO FLATPCKR
+            // Al hacer clic en el botón, se abre el calendario Flatpickr
             openDatePickerBtn.addEventListener('click', () => {
-                datePickerInput.click();
+                 if (flatpickrInstance) {
+                    flatpickrInstance.open();
+                }
             });
-            
-            // Al cambiar la fecha en el input oculto, actualizar el texto de visualización
-            datePickerInput.addEventListener('change', updateSelectedDateDisplay);
 
             /**
              * Actualiza el texto con la fecha seleccionada.
+             * @param {Date | null} dateObj - Objeto Date seleccionado.
              */
-            function updateSelectedDateDisplay() {
-                const dateValue = datePickerInput.value;
-                if (dateValue) {
+            function updateSelectedDateDisplay(dateObj = null) {
+                if (dateObj) {
                     try {
-                        // Se usa .replace(/-/g, '/') para asegurar la interpretación de la fecha local.
-                        const date = new Date(dateValue.replace(/-/g, '/')); 
-                        
                         const weekdayNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-                        const dayName = weekdayNames[date.getDay()];
-                        const dayDate = date.getDate();
-                        const month = date.toLocaleString('es-ES', { month: 'long' });
+                        const dayName = weekdayNames[dateObj.getDay()];
+                        const dayDate = dateObj.getDate();
+                        const month = dateObj.toLocaleString('es-ES', { month: 'long' });
                         selectedDateDisplay.textContent = `Fecha seleccionada: ${dayName}, ${dayDate} de ${month}`;
                     } catch (e) {
                         selectedDateDisplay.textContent = 'Fecha no válida.';
@@ -304,15 +328,15 @@
              * NUEVA FUNCIÓN: Agrega la fecha seleccionada del date picker a la lista de días.
              */
             function addSelectedDate() {
-                const dateValue = datePickerInput.value;
-                if (!dateValue) {
+                const selectedDates = flatpickrInstance ? flatpickrInstance.selectedDates : [];
+
+                if (selectedDates.length === 0) {
                     showAlert('Error', 'Por favor, selecciona una fecha del calendario antes de agregar.');
                     return;
                 }
 
                 try {
-                    // Se usa .replace(/-/g, '/') para asegurar la interpretación de la fecha local.
-                    const date = new Date(dateValue.replace(/-/g, '/')); 
+                    const date = selectedDates[0];
                     
                     if (isNaN(date.getTime())) {
                         showAlert('Error', 'La fecha seleccionada no es válida.');
@@ -334,8 +358,8 @@
                     
                     addDayRow(dayName, dayDate);
                     
-                    // Limpiar el input de fecha y la visualización después de la adición
-                    datePickerInput.value = '';
+                    // Limpiar la selección de Flatpickr y la visualización después de la adición
+                    flatpickrInstance.clear();
                     updateSelectedDateDisplay();
                     
                     showAlert('Éxito', `Día ${dayName} ${dayDate} agregado correctamente.`);
@@ -346,7 +370,6 @@
                 }
             }
             
-            // ELIMINADA: La función autofillDays ha sido eliminada.
 
             /**
              * Agrega una nueva fila de entrada de equipo a la UI.
