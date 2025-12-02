@@ -216,11 +216,10 @@
                     locale: "es", // Usar idioma español
                     dateFormat: "Y-m-d", // Formato interno para JS
                     inline: false, // Asegurar que sea emergente
+                    mode: "multiple", // <-- CAMBIO CLAVE: HABILITA SELECCIÓN MÚLTIPLE
                     onChange: function(selectedDates, dateStr, instance) {
                         // Cuando se selecciona una fecha en el calendario
-                        if (selectedDates.length > 0) {
-                            updateSelectedDateDisplay(selectedDates[0]);
-                        }
+                        updateSelectedDateDisplay(selectedDates);
                     }
                 });
             }
@@ -257,19 +256,25 @@
             });
 
             /**
-             * Actualiza el texto con la fecha seleccionada.
-             * @param {Date | null} dateObj - Objeto Date seleccionado.
+             * Actualiza el texto con las fechas seleccionadas.
+             * @param {Date[] | null} selectedDates - Array de objetos Date seleccionados.
              */
-            function updateSelectedDateDisplay(dateObj = null) {
-                if (dateObj) {
-                    try {
-                        const weekdayNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-                        const dayName = weekdayNames[dateObj.getDay()];
-                        const dayDate = dateObj.getDate();
-                        const month = dateObj.toLocaleString('es-ES', { month: 'long' });
+            function updateSelectedDateDisplay(selectedDates = null) {
+                const dates = selectedDates && selectedDates.length > 0 ? selectedDates : (flatpickrInstance ? flatpickrInstance.selectedDates : []);
+                
+                if (dates.length > 0) {
+                    const sortedDates = dates.sort((a, b) => a.getTime() - b.getTime());
+                    const firstDate = sortedDates[0];
+                    const lastDate = sortedDates[sortedDates.length - 1];
+
+                    if (dates.length === 1) {
+                        const dayName = firstDate.toLocaleString('es-ES', { weekday: 'long' });
+                        const dayDate = firstDate.getDate();
+                        const month = firstDate.toLocaleString('es-ES', { month: 'long' });
                         selectedDateDisplay.textContent = `Fecha seleccionada: ${dayName}, ${dayDate} de ${month}`;
-                    } catch (e) {
-                        selectedDateDisplay.textContent = 'Fecha no válida.';
+                    } else {
+                        // Muestra un resumen de las fechas seleccionadas
+                        selectedDateDisplay.textContent = `${dates.length} días seleccionados (Del ${firstDate.getDate()} al ${lastDate.getDate()})`;
                     }
                 } else {
                     selectedDateDisplay.textContent = 'Aún no se ha seleccionado ninguna fecha.';
@@ -325,48 +330,49 @@
             }
 
             /**
-             * NUEVA FUNCIÓN: Agrega la fecha seleccionada del date picker a la lista de días.
+             * Agrega la fecha(s) seleccionada(s) del calendario a la lista de días.
              */
             function addSelectedDate() {
                 const selectedDates = flatpickrInstance ? flatpickrInstance.selectedDates : [];
-
+                
                 if (selectedDates.length === 0) {
-                    showAlert('Error', 'Por favor, selecciona una fecha del calendario antes de agregar.');
+                    showAlert('Error', 'Por favor, selecciona al menos un día del calendario antes de agregar.');
                     return;
                 }
 
+                let datesAdded = 0;
+                const existingDays = getDaysFromInputs();
+                const weekdayNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
                 try {
-                    const date = selectedDates[0];
-                    
-                    if (isNaN(date.getTime())) {
-                        showAlert('Error', 'La fecha seleccionada no es válida.');
-                        return;
-                    }
+                    // Itera sobre todas las fechas seleccionadas
+                    selectedDates.forEach(date => {
+                        if (isNaN(date.getTime())) return;
 
-                    const weekdayNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-                    const dayName = weekdayNames[date.getDay()];
-                    const dayDate = date.getDate();
+                        const dayName = weekdayNames[date.getDay()];
+                        const dayDate = date.getDate();
 
-                    const existingDays = getDaysFromInputs();
-                    // Comprobar duplicados
-                    const isDuplicate = existingDays.some(day => day.date === dayDate && day.day === dayName);
-                    
-                    if (isDuplicate) {
-                        showAlert('Error', `El día ${dayName} ${dayDate} ya ha sido agregado.`);
-                        return;
+                        // Comprobar duplicados
+                        const isDuplicate = existingDays.some(day => day.date === dayDate && day.day === dayName);
+
+                        if (!isDuplicate) {
+                            addDayRow(dayName, dayDate);
+                            datesAdded++;
+                        }
+                    });
+
+                    if (datesAdded > 0) {
+                        // Limpiar la selección de Flatpickr y la visualización después de la adición
+                        flatpickrInstance.clear();
+                        updateSelectedDateDisplay();
+                        showAlert('Éxito', `${datesAdded} día(s) agregado(s) correctamente al horario.`);
+                    } else {
+                        showAlert('Advertencia', 'Ningún día nuevo fue agregado. Es posible que ya estuvieran en la lista.');
                     }
-                    
-                    addDayRow(dayName, dayDate);
-                    
-                    // Limpiar la selección de Flatpickr y la visualización después de la adición
-                    flatpickrInstance.clear();
-                    updateSelectedDateDisplay();
-                    
-                    showAlert('Éxito', `Día ${dayName} ${dayDate} agregado correctamente.`);
 
                 } catch (e) {
-                    console.error('Error processing date:', e);
-                    showAlert('Error', 'Hubo un problema al procesar la fecha.');
+                    console.error('Error processing dates:', e);
+                    showAlert('Error', 'Hubo un problema al procesar las fechas.');
                 }
             }
             
