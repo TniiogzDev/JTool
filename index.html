@@ -1,40 +1,840 @@
-<!DOCTYPE html> <!-- Ayuda al navegador a interpretar el documento como HTML5 -->
-<html lang="es"> <!-- El atributo lang especifica el idioma del contenido -->
-<head> <!-- El elemento <head> contiene metadatos, enlaces a estilos, scripts y configuraciones que no se muestran directamente en la página, pero son esenciales para su funcionamiento y presentación. -->
-    <meta charset="UTF-8"> <!-- Define la codificación de caracteres para el documento, asegurando que se muestren correctamente los caracteres especiales y acentos. -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Hace que el diseño sea responsivo, ajustándose al ancho del dispositivo -->
-    <title>Inicio</title> <!-- Título de la página que aparece en la pestaña del navegador -->
-     <script src="https://cdn.tailwindcss.com"></script> <!-- Importa Tailwind CSS desde un CDN para utilizar sus clases de estilo -->
-    <link rel="preconnect" href="https://fonts.googleapis.com"> <!-- Preconecta al servidor de Google Fonts para mejorar la velocidad de carga -->
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <!-- Preconecta al servidor de Google Fonts con soporte para CORS -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet"> <!-- Importa la fuente Noto Sans desde Google Fonts -->
-        <style> /* Estilos personalizados */
-        body {
-            font-family: 'Noto Sans', sans-serif; /* Fuente principal */
-            background-color: #f0f1f1; /* Background del sitio */
+<!DOCTYPE html>
+<html lang="es" class="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CronoAV - Planificador Audiovisual</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
         }
-        </style>
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link id="flatpickr-dark" rel="stylesheet" href="https://npmcdn.com/flatpickr/dist/themes/dark.css" disabled>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
+
+    <style>
+        /* Estilos base y transiciones suaves para el Modo Oscuro */
+        body {
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Pestañas activas/inactivas */
+        .tab-active {
+            border-bottom: 2px solid #4f46e5;
+            color: #4f46e5;
+            font-weight: 600;
+        }
+
+        .dark .tab-active {
+            border-bottom: 2px solid #818cf8;
+            color: #818cf8;
+        }
+
+        .tab-inactive {
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .tab-inactive:hover {
+            color: #334155;
+        }
+
+        .dark .tab-inactive {
+            color: #94a3b8;
+        }
+
+        .dark .tab-inactive:hover {
+            color: #cbd5e1;
+        }
+
+        /* Spinner de carga */
+        .loader {
+            border: 3px solid rgba(165, 180, 252, 0.3);
+            border-top: 3px solid #4f46e5;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        .dark .loader {
+            border-top: 3px solid #818cf8;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Estilos personalizados para inputs checkbox */
+        .custom-checkbox {
+            width: 1.125rem;
+            height: 1.125rem;
+            accent-color: #4f46e5;
+            cursor: pointer;
+        }
+
+        .dark .custom-checkbox {
+            accent-color: #818cf8;
+        }
+    </style>
 </head>
-<body class="p-4 sm:p-8"> <!-- Contenedor principal con padding responsivo -->
-    <div class="flex flex-col items-right justify-start min-h-screen"> <!-- Contenedor principal con flexbox para centrar el contenido verticalmente -->
-        <div class="flex items-center gap-4 mb-2"> <!-- Contenedor del logo y título con espacio entre ellos -->
-                <img src="Imagenes/JTool_Logo.png" alt="Logo JTool logo" class="h-14 w-14 object-contain"> <!-- Logo con tamaño fijo y ajuste de imagen -->
-            <h1 class="text-2xl font-bold"><FONT FACE="courier">| JTool</FONT>
-</h1> <!-- Título principal con tamaño y peso de fuente -->
-            <br> <!-- Salto de línea para separar el título del contenido siguiente -->
+
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-200 antialiased min-h-screen flex flex-col">
+
+    <header
+        class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-20 shadow-sm transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="bg-indigo-600 dark:bg-indigo-500 text-white p-2 rounded-lg font-bold text-xl shadow-inner flex items-center justify-center w-10 h-10">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <span class="font-bold text-xl tracking-tight">Crono<span
+                            class="text-indigo-600 dark:text-indigo-400 font-medium">AV</span></span>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div id="loading-indicator"
+                        class="hidden flex items-center text-sm text-indigo-700 bg-indigo-50 dark:bg-indigo-900/30 dark:text-indigo-300 px-3 py-1.5 rounded-full font-medium transition-all">
+                        <div class="loader mr-2"></div> Sincronizando...
+                    </div>
+
+                    <button onclick="toggleDarkMode()"
+                        class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors text-slate-500 dark:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <svg id="icon-sun" class="w-6 h-6 hidden dark:block" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+                            </path>
+                        </svg>
+                        <svg id="icon-moon" class="w-6 h-6 block dark:hidden" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
         </div>
-        <p class="mb-4">Aquí encontrarás herramientas para ayudarte a generar horarios en diferentes áreas.</p> <!-- Descripción introductoria -->
-        <div class="bg-[#ffffff] p-6 rounded-xl mb-25"> <!-- Contenedor de la tarjeta con fondo blanco, padding, bordes redondeados y sombra -->
-                <div class="flex justify-center"> <!-- Contenedor interno con flexbox para centrar el contenido -->
-                <a href="Horarios.html" class="bg-[#4b6da6] text-white px-4 py-2 rounded inline-block">Generador Horario Multimedia</a> <!-- Botón con estilos personalizados -->
-                </div> 
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <div class="border-b border-slate-200 dark:border-slate-700 mb-8">
+            <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                <button onclick="cambiarPestaña('generador')" id="tab-generador"
+                    class="tab-active whitespace-nowrap py-4 px-1 text-base transition-colors focus:outline-none">
+                    Generador de Horarios
+                </button>
+                <button onclick="cambiarPestaña('personal')" id="tab-personal"
+                    class="tab-inactive whitespace-nowrap py-4 px-1 text-base transition-colors focus:outline-none">
+                    Base de Datos (Personal)
+                </button>
+            </nav>
         </div>
+
+        <div id="seccion-generador" class="block animate-fade-in">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+                <div class="lg:col-span-4 space-y-6">
+
+                    <div
+                        class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-colors">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div
+                                class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 font-bold rounded-full w-7 h-7 flex items-center justify-center text-sm">
+                                1</div>
+                            <h3 class="text-lg font-bold">Días de Reunión</h3>
+                        </div>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Selecciona los días del mes. El
+                            sistema detecta automáticamente si es VMC (semana) o RFS (fin de semana).</p>
+
+                        <input type="text" id="calendario-input"
+                            class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 outline-none transition-colors dark:text-white"
+                            placeholder="Seleccionar fechas en el calendario...">
+
+                        <div id="lista-fechas" class="mt-4 flex flex-wrap gap-2"></div>
+                    </div>
+
+                    <div
+                        class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-colors">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div
+                                class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 font-bold rounded-full w-7 h-7 flex items-center justify-center text-sm">
+                                2</div>
+                            <h3 class="text-lg font-bold">Ausencias del Mes</h3>
+                        </div>
+                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Añade restricciones marcando los días
+                            que un hermano no estará disponible.</p>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label
+                                    class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">A.
+                                    Seleccionar Hermano</label>
+                                <select id="select-persona"
+                                    class="w-full p-3 bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 outline-none dark:text-white transition-colors">
+                                    <option value="">-- Elige un integrante --</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label
+                                    class="block text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">B.
+                                    Marcar Días de Ausencia</label>
+                                <div id="contenedor-fechas-ausencia"
+                                    class="max-h-48 overflow-y-auto border border-slate-200 dark:border-slate-700 rounded-xl p-3 bg-slate-50 dark:bg-slate-900 space-y-2 transition-colors">
+                                    <div class="text-sm text-slate-400 dark:text-slate-500 p-2 text-center italic">
+                                        Selecciona primero los días en el Paso 1.</div>
+                                </div>
+                            </div>
+
+                            <button onclick="agregarRestriccionesTemporales()"
+                                class="w-full bg-slate-800 dark:bg-slate-700 text-white py-3 rounded-xl text-sm font-semibold hover:bg-slate-700 dark:hover:bg-slate-600 focus:ring-4 focus:ring-slate-200 dark:focus:ring-slate-800 transition shadow-sm">
+                                Guardar Ausencias
+                            </button>
+                        </div>
+
+                        <div id="lista-restricciones" class="mt-6 space-y-2">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-8 flex flex-col h-full">
+                    <div
+                        class="bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-colors flex-grow flex flex-col">
+
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                            <div>
+                                <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Horario Generado</h2>
+                                <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Algoritmo de balance de
+                                    cargas activado.</p>
+                            </div>
+                            <button onclick="generarHorario()"
+                                class="w-full sm:w-auto bg-indigo-600 dark:bg-indigo-500 text-white px-6 py-3 rounded-xl font-bold hover:bg-indigo-700 dark:hover:bg-indigo-600 transition shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2 focus:ring-4 focus:ring-indigo-100 dark:focus:ring-indigo-900/50">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                </svg>
+                                Procesar Horario
+                            </button>
+                        </div>
+
+                        <div id="contenedor-horario"
+                            class="flex-grow flex items-center justify-center rounded-xl border border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 p-4 transition-colors">
+                            <div class="text-center text-slate-400 dark:text-slate-500 py-10">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4 opacity-50"
+                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <p class="font-medium text-lg">No hay horario generado</p>
+                                <p class="text-sm mt-1">Completa los pasos 1 y 2, y luego presiona "Procesar Horario".
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div id="seccion-personal" class="hidden animate-fade-in">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+                <div class="lg:col-span-4">
+                    <div
+                        class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 transition-colors h-fit sticky top-24">
+                        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-slate-700">
+                            <div
+                                class="bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 p-2 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                                </svg>
+                            </div>
+                            <h2 class="text-xl font-bold text-slate-800 dark:text-white" id="form-title">Añadir
+                                Participante</h2>
+                        </div>
+
+                        <div class="space-y-5">
+                            <div>
+                                <label
+                                    class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">Nombre
+                                    Completo</label>
+                                <input type="text" id="input-nombre"
+                                    class="w-full p-3 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none dark:text-white transition-colors"
+                                    placeholder="Ej. Antonio Gómez">
+                            </div>
+
+                            <div
+                                class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors">
+                                <label
+                                    class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 uppercase tracking-wider text-xs">Roles
+                                    Habilitados</label>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <label
+                                        class="flex items-center text-sm cursor-pointer hover:bg-white dark:hover:bg-slate-800 p-1.5 rounded-lg border border-transparent hover:border-slate-200 dark:hover:border-slate-600 transition">
+                                        <input type="checkbox" value="Audio" class="chk-rol mr-3 custom-checkbox"> <span
+                                            class="font-medium">Audio</span>
+                                    </label>
+                                    <label
+                                        class="flex items-center text-sm cursor-pointer hover:bg-white dark:hover:bg-slate-800 p-1.5 rounded-lg border border-transparent hover:border-slate-200 dark:hover:border-slate-600 transition">
+                                        <input type="checkbox" value="Video" class="chk-rol mr-3 custom-checkbox"> <span
+                                            class="font-medium">Video</span>
+                                    </label>
+                                    <label
+                                        class="flex items-center text-sm cursor-pointer hover:bg-white dark:hover:bg-slate-800 p-1.5 rounded-lg border border-transparent hover:border-slate-200 dark:hover:border-slate-600 transition">
+                                        <input type="checkbox" value="Microfono" class="chk-rol mr-3 custom-checkbox">
+                                        <span class="font-medium">Micrófono</span>
+                                    </label>
+                                    <label
+                                        class="flex items-center text-sm cursor-pointer hover:bg-white dark:hover:bg-slate-800 p-1.5 rounded-lg border border-transparent hover:border-slate-200 dark:hover:border-slate-600 transition">
+                                        <input type="checkbox" value="Plataforma" class="chk-rol mr-3 custom-checkbox">
+                                        <span class="font-medium">Plataforma</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div
+                                class="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors">
+                                <label
+                                    class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3 uppercase tracking-wider text-xs">Asistencia
+                                    (Reuniones)</label>
+                                <div class="space-y-2">
+                                    <label
+                                        class="flex items-center text-sm cursor-pointer hover:bg-white dark:hover:bg-slate-800 p-2 rounded-lg border border-transparent hover:border-slate-200 dark:hover:border-slate-600 transition">
+                                        <input type="checkbox" value="VMC" class="chk-disp mr-3 custom-checkbox">
+                                        <span class="font-medium">Semana <span
+                                                class="text-slate-400 dark:text-slate-500 text-xs ml-1">(VMC)</span></span>
+                                    </label>
+                                    <label
+                                        class="flex items-center text-sm cursor-pointer hover:bg-white dark:hover:bg-slate-800 p-2 rounded-lg border border-transparent hover:border-slate-200 dark:hover:border-slate-600 transition">
+                                        <input type="checkbox" value="RFS" class="chk-disp mr-3 custom-checkbox">
+                                        <span class="font-medium">Fin de Semana <span
+                                                class="text-slate-400 dark:text-slate-500 text-xs ml-1">(RFS)</span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 flex gap-3">
+                            <button onclick="guardarParticipante()"
+                                class="flex-1 bg-indigo-600 dark:bg-indigo-500 text-white py-3 rounded-xl hover:bg-indigo-700 dark:hover:bg-indigo-600 font-bold transition shadow-md shadow-indigo-600/10">Guardar</button>
+                            <button onclick="limpiarFormulario()"
+                                class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 px-4 py-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition font-semibold">Cancelar</button>
+                        </div>
+                        <button id="btn-eliminar" onclick="eliminarParticipante()"
+                            class="w-full mt-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-800/50 py-3 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/40 font-bold transition hidden">Eliminar
+                            Participante</button>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-8">
+                    <div
+                        class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden transition-colors flex flex-col h-full">
+                        <div
+                            class="px-6 py-5 border-b border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/30 flex justify-between items-center">
+                            <h2 class="text-lg font-bold text-slate-800 dark:text-white">Directorio Oficial (Google
+                                Sheets)</h2>
+                            <span
+                                class="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 text-xs font-bold px-2 py-1 rounded shadow-sm border border-emerald-200 dark:border-emerald-800">Conectado</span>
+                        </div>
+
+                        <div class="overflow-x-auto flex-grow max-h-[700px] overflow-y-auto">
+                            <table class="min-w-full text-left border-collapse">
+                                <thead
+                                    class="bg-white dark:bg-slate-800 sticky top-0 z-10 shadow-sm dark:shadow-slate-900">
+                                    <tr>
+                                        <th
+                                            class="p-5 text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400">
+                                            Hermano</th>
+                                        <th
+                                            class="p-5 text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400">
+                                            Roles</th>
+                                        <th
+                                            class="p-5 text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400">
+                                            Asistencia</th>
+                                        <th
+                                            class="p-5 text-xs uppercase tracking-wider font-bold text-slate-500 dark:text-slate-400 text-right">
+                                            Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-personal" class="divide-y divide-slate-100 dark:divide-slate-700/50">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <div id="toast"
+        class="fixed bottom-5 right-5 transform translate-y-20 opacity-0 transition-all duration-300 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3 z-50 font-medium">
+        <span id="toast-icon" class="text-xl">✅</span>
+        <span id="toast-msg">Operación exitosa</span>
     </div>
+
+    <script>
+        // API GOOGLE APPS SCRIPT
+        const API_URL = "https://script.google.com/macros/s/AKfycbxhWzxgqz_ksC2lvlF3pKIRBZ_shQ1yQIDoKXm4tQ_UO1kQoY-_Lns1R96RGkuAUaeF/exec";
+
+        // --- ESTADO GLOBAL ---
+        let personalBD = [];
+        let diasSeleccionados = [];
+        let restriccionesTemporales = {};
+
+        const mapaRoles = {
+            "Plataforma": "Plataforma",
+            "Audio": "Audio",
+            "Video": "Video",
+            "Micrófono A": "Microfono",
+            "Micrófono B": "Microfono"
+        };
+
+        // --- INICIALIZACIÓN ---
+        document.addEventListener('DOMContentLoaded', () => {
+            inicializarModoOscuro();
+            cargarDatos();
+            inicializarCalendario();
+        });
+
+        // --- SISTEMA DE MODO OSCURO ---
+        function inicializarModoOscuro() {
+            // Revisar localStorage o preferencias del sistema
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                document.getElementById('flatpickr-dark').removeAttribute('disabled');
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.getElementById('flatpickr-dark').setAttribute('disabled', 'true');
+            }
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            const flatpickrCSS = document.getElementById('flatpickr-dark');
+
+            if (isDark) {
+                localStorage.theme = 'dark';
+                flatpickrCSS.removeAttribute('disabled');
+            } else {
+                localStorage.theme = 'light';
+                flatpickrCSS.setAttribute('disabled', 'true');
+            }
+        }
+
+        // --- NAVEGACIÓN TABS ---
+        function cambiarPestaña(tab) {
+            const secGen = document.getElementById('seccion-generador');
+            const secPer = document.getElementById('seccion-personal');
+
+            if (tab === 'generador') {
+                document.getElementById('tab-generador').classList.replace('tab-inactive', 'tab-active');
+                document.getElementById('tab-personal').classList.replace('tab-active', 'tab-inactive');
+                secGen.classList.remove('hidden');
+                secPer.classList.add('hidden');
+                actualizarSelectoresGenerador();
+            } else {
+                document.getElementById('tab-personal').classList.replace('tab-inactive', 'tab-active');
+                document.getElementById('tab-generador').classList.replace('tab-active', 'tab-inactive');
+                secPer.classList.remove('hidden');
+                secGen.classList.add('hidden');
+            }
+        }
+
+        // --- UI UTILS ---
+        function mostrarCargando(estado) {
+            const loader = document.getElementById('loading-indicator');
+            estado ? loader.classList.remove('hidden') : loader.classList.add('hidden');
+        }
+
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            document.getElementById('toast-icon').innerText = isError ? '⚠️' : '✅';
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0'), 3500);
+        }
+
+        // ================= LÓGICA DE BASE DE DATOS (API) =================
+        async function cargarDatos() {
+            mostrarCargando(true);
+            try {
+                const response = await fetch(API_URL);
+                personalBD = await response.json();
+                renderizarTablaBD();
+                actualizarSelectoresGenerador();
+            } catch (error) {
+                console.error("Error API:", error);
+                showToast("Error al conectar con Sheets. Revisa el script.", true);
+            }
+            mostrarCargando(false);
+        }
+
+        function renderizarTablaBD() {
+            const tbody = document.getElementById('tabla-personal');
+            tbody.innerHTML = '';
+
+            if (personalBD.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-slate-500 dark:text-slate-400">No hay personal registrado en Sheets</td></tr>`;
+                return;
+            }
+
+            personalBD.forEach(persona => {
+                const rolesBadge = persona.roles.map(r => `<span class="inline-block bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 text-xs px-2.5 py-1 rounded-md border border-indigo-100 dark:border-indigo-800 font-medium mb-1 mr-1 shadow-sm">${r}</span>`).join('');
+                const dispBadge = persona.disponibilidad.map(d => `<span class="inline-block bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-xs px-2.5 py-1 rounded-md border border-emerald-100 dark:border-emerald-800/50 font-medium mr-1">${d}</span>`).join('');
+
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/20 transition-colors">
+                        <td class="p-5 font-bold text-slate-800 dark:text-slate-200 text-sm whitespace-nowrap">${persona.nombre}</td>
+                        <td class="p-5">${rolesBadge || '<span class="text-slate-400 italic text-xs">Sin roles</span>'}</td>
+                        <td class="p-5">${dispBadge || '-'}</td>
+                        <td class="p-5 text-right">
+                            <button onclick="editarPersona('${persona.nombre}')" class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-900 dark:hover:text-indigo-300 font-bold text-sm bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-800/50 px-4 py-2 rounded-lg transition-colors">Editar</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        async function guardarParticipante() {
+            const nombre = document.getElementById('input-nombre').value.trim();
+            if (!nombre) return showToast("El nombre es obligatorio", true);
+
+            const roles = Array.from(document.querySelectorAll('.chk-rol:checked')).map(chk => chk.value);
+            const disponibilidad = Array.from(document.querySelectorAll('.chk-disp:checked')).map(chk => chk.value);
+
+            if (disponibilidad.length === 0) return showToast("Debes elegir al menos 1 asistencia", true);
+
+            mostrarCargando(true);
+            const data = { action: "save", nombre, roles, disponibilidad };
+
+            try {
+                await fetch(API_URL, { method: 'POST', body: JSON.stringify(data) });
+                showToast("Guardado correctamente");
+                limpiarFormulario();
+                await cargarDatos();
+            } catch (e) {
+                showToast("Error al guardar", true);
+            }
+        }
+
+        async function eliminarParticipante() {
+            const nombre = document.getElementById('input-nombre').value;
+            if (!confirm(`¿Eliminar permanentemente a ${nombre} de la base de datos?`)) return;
+
+            mostrarCargando(true);
+            try {
+                await fetch(API_URL, { method: 'POST', body: JSON.stringify({ action: "delete", nombre }) });
+                showToast("Eliminado correctamente");
+                limpiarFormulario();
+                await cargarDatos();
+            } catch (e) {
+                showToast("Error al eliminar", true);
+            }
+        }
+
+        function editarPersona(nombre) {
+            const persona = personalBD.find(p => p.nombre === nombre);
+            if (!persona) return;
+
+            document.getElementById('form-title').innerText = "Editar Participante";
+            const inputNombre = document.getElementById('input-nombre');
+            inputNombre.value = persona.nombre;
+            inputNombre.disabled = true;
+            inputNombre.classList.add('bg-slate-100', 'dark:bg-slate-800', 'text-slate-500', 'dark:text-slate-400', 'cursor-not-allowed');
+
+            document.querySelectorAll('.chk-rol').forEach(chk => chk.checked = persona.roles.includes(chk.value));
+            document.querySelectorAll('.chk-disp').forEach(chk => chk.checked = persona.disponibilidad.includes(chk.value));
+
+            document.getElementById('btn-eliminar').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' }); // Subir al formulario
+        }
+
+        function limpiarFormulario() {
+            document.getElementById('form-title').innerText = "Añadir Participante";
+            const inputNombre = document.getElementById('input-nombre');
+            inputNombre.value = "";
+            inputNombre.disabled = false;
+            inputNombre.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'text-slate-500', 'dark:text-slate-400', 'cursor-not-allowed');
+            document.querySelectorAll('input[type="checkbox"]').forEach(chk => chk.checked = false);
+            document.getElementById('btn-eliminar').classList.add('hidden');
+        }
+
+        // ================= LÓGICA DEL GENERADOR Y ALGORITMO =================
+        function inicializarCalendario() {
+            flatpickr("#calendario-input", {
+                mode: "multiple",
+                locale: "es",
+                dateFormat: "Y-m-d",
+                onChange: function (selectedDates, dateStr, instance) {
+                    selectedDates.sort((a, b) => a - b);
+
+                    diasSeleccionados = selectedDates.map(date => {
+                        let dayOfWeek = date.getDay(); // 0 Dom, 6 Sab
+                        let tipo = (dayOfWeek === 0 || dayOfWeek === 6) ? 'RFS' : 'VMC';
+
+                        const opciones = { weekday: 'short', day: '2-digit', month: 'short' };
+                        let label = date.toLocaleDateString('es-ES', opciones).replace('.', '');
+                        label = label.charAt(0).toUpperCase() + label.slice(1);
+
+                        return { dateStr: flatpickr.formatDate(date, "Y-m-d"), label: label, tipo: tipo };
+                    });
+
+                    renderizarPillsFechas();
+                    actualizarSelectoresGenerador();
+                }
+            });
+        }
+
+        function renderizarPillsFechas() {
+            const container = document.getElementById('lista-fechas');
+            container.innerHTML = diasSeleccionados.map(d => `
+                <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-bold shadow-sm ${d.tipo === 'VMC' ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800/50' : 'bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800/50'}">
+                    ${d.label} <span class="ml-1.5 text-xs opacity-75 font-medium tracking-wide">(${d.tipo})</span>
+                </span>
+            `).join('');
+        }
+
+        function actualizarSelectoresGenerador() {
+            // Select de Personas
+            const selPersona = document.getElementById('select-persona');
+            const valorSeleccionado = selPersona.value;
+            selPersona.innerHTML = '<option value="">-- Elige un integrante --</option>';
+
+            let personalOrdenado = [...personalBD].sort((a, b) => a.nombre.localeCompare(b.nombre));
+            personalOrdenado.forEach(p => {
+                selPersona.innerHTML += `<option value="${p.nombre}">${p.nombre}</option>`;
+            });
+            if (valorSeleccionado) selPersona.value = valorSeleccionado;
+
+            // Checkboxes de Fechas para Ausencias
+            const contenedorFechas = document.getElementById('contenedor-fechas-ausencia');
+            contenedorFechas.innerHTML = '';
+
+            if (diasSeleccionados.length > 0) {
+                diasSeleccionados.forEach(d => {
+                    contenedorFechas.innerHTML += `
+                        <label class="flex items-center text-sm cursor-pointer hover:bg-white dark:hover:bg-slate-800 p-2.5 rounded-lg border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition">
+                            <input type="checkbox" value="${d.dateStr}" class="chk-fecha-ausencia mr-3 custom-checkbox">
+                            <span class="font-bold text-slate-700 dark:text-slate-300">${d.label}</span> 
+                            <span class="ml-2 text-xs font-medium px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400">${d.tipo}</span>
+                        </label>
+                    `;
+                });
+            } else {
+                contenedorFechas.innerHTML = '<div class="text-sm text-slate-400 dark:text-slate-500 p-2 text-center italic">Selecciona primero los días en el Paso 1.</div>';
+            }
+        }
+
+        // --- SISTEMA MULTIPLE DE AUSENCIAS ---
+        function agregarRestriccionesTemporales() {
+            const nombre = document.getElementById('select-persona').value;
+            if (!nombre) return showToast("Selecciona un hermano primero", true);
+
+            const checkboxes = document.querySelectorAll('.chk-fecha-ausencia:checked');
+            if (checkboxes.length === 0) return showToast("Marca al menos un día de ausencia", true);
+
+            if (!restriccionesTemporales[nombre]) restriccionesTemporales[nombre] = [];
+
+            let agregadas = 0;
+            checkboxes.forEach(chk => {
+                const fecha = chk.value;
+                if (!restriccionesTemporales[nombre].includes(fecha)) {
+                    restriccionesTemporales[nombre].push(fecha);
+                    agregadas++;
+                }
+                chk.checked = false; // Desmarcar
+            });
+
+            if (agregadas > 0) {
+                renderizarListaRestricciones();
+                showToast(`Se registraron ${agregadas} ausencias para ${nombre}`);
+            } else {
+                showToast("Esas fechas ya estaban marcadas para él", true);
+            }
+
+            document.getElementById('select-persona').value = '';
+        }
+
+        function eliminarRestriccion(nombre, fecha) {
+            restriccionesTemporales[nombre] = restriccionesTemporales[nombre].filter(f => f !== fecha);
+            if (restriccionesTemporales[nombre].length === 0) delete restriccionesTemporales[nombre];
+            renderizarListaRestricciones();
+        }
+
+        function renderizarListaRestricciones() {
+            const container = document.getElementById('lista-restricciones');
+            container.innerHTML = '';
+
+            Object.keys(restriccionesTemporales).forEach(nombre => {
+                restriccionesTemporales[nombre].forEach(fechaStr => {
+                    const diaObj = diasSeleccionados.find(d => d.dateStr === fechaStr);
+                    const labelFecha = diaObj ? diaObj.label : fechaStr;
+
+                    container.innerHTML += `
+                        <div class="flex justify-between items-center bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 rounded-xl text-sm shadow-sm transition-colors">
+                            <div><span class="font-bold text-slate-800 dark:text-slate-200">${nombre}</span> falta el <span class="text-red-600 dark:text-red-400 font-bold bg-red-50 dark:bg-red-900/30 px-2 py-0.5 rounded ml-1">${labelFecha}</span></div>
+                            <button onclick="eliminarRestriccion('${nombre}', '${fechaStr}')" class="text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition bg-slate-50 dark:bg-slate-900 p-1.5 rounded-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            </button>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        // --- ALGORITMO PROFESIONAL ---
+        function generarHorario() {
+            if (diasSeleccionados.length === 0) return showToast("Selecciona días de reunión en el Paso 1", true);
+            if (personalBD.length === 0) return showToast("No hay personal en la Base de Datos", true);
+
+            let horarioMensual = [];
+            let conteoTurnos = {};
+
+            personalBD.forEach(p => conteoTurnos[p.nombre] = 0);
+
+            diasSeleccionados.forEach(diaInfo => {
+                let asignacionesDia = {};
+
+                // 1. Descartar ausentes temporales
+                let disponiblesHoy = personalBD.filter(p => {
+                    let ocupados = restriccionesTemporales[p.nombre] || [];
+                    return !ocupados.includes(diaInfo.dateStr);
+                });
+
+                const rolesRequeridos = ["Plataforma", "Audio", "Video", "Micrófono A", "Micrófono B"];
+
+                rolesRequeridos.forEach(rol => {
+                    let habilidadReq = mapaRoles[rol];
+
+                    // 2. Filtrar por habilidad y asistencia
+                    let candidatos = disponiblesHoy.filter(p =>
+                        p.roles.includes(habilidadReq) &&
+                        p.disponibilidad.includes(diaInfo.tipo)
+                    );
+
+                    if (candidatos.length > 0) {
+                        // 3. Balance de carga (ordenar por menor cantidad de turnos)
+                        candidatos.sort((a, b) => conteoTurnos[a.nombre] - conteoTurnos[b.nombre]);
+
+                        let elegido = candidatos[0];
+                        asignacionesDia[rol] = elegido.nombre;
+
+                        conteoTurnos[elegido.nombre]++;
+
+                        // 4. Aislamiento para evitar repetición el mismo día
+                        disponiblesHoy = disponiblesHoy.filter(p => p.nombre !== elegido.nombre);
+                    } else {
+                        asignacionesDia[rol] = "SIN ASIGNAR";
+                    }
+                });
+
+                horarioMensual.push({
+                    fecha: diaInfo,
+                    asignaciones: asignacionesDia
+                });
+            });
+
+            renderizarTablaHorario(horarioMensual);
+        }
+
+        function renderizarTablaHorario(horario) {
+            const container = document.getElementById('contenedor-horario');
+
+            let html = `
+                <div class="w-full h-full bg-white dark:bg-slate-800 rounded-xl overflow-hidden transition-colors border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-left border-collapse">
+                            <thead class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700">
+                                <tr>
+                                    <th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Día</th>
+                                    <th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Reunión</th>
+                                    <th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Plataforma</th>
+                                    <th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Audio</th>
+                                    <th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Video</th>
+                                    <th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Micrófono A</th>
+                                    <th class="p-4 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Micrófono B</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100 dark:divide-slate-700/50">
+            `;
+
+            horario.forEach(dia => {
+                const asig = dia.asignaciones;
+
+                const cellFormat = (nombre) => {
+                    if (nombre === "SIN ASIGNAR") return `<td class="p-4 bg-red-50/50 dark:bg-red-900/10 text-red-600 dark:text-red-400 font-bold text-xs">⚠️ Falta Personal</td>`;
+                    return `<td class="p-4 text-slate-800 dark:text-slate-200 font-medium text-sm whitespace-nowrap">${nombre}</td>`;
+                };
+
+                html += `
+                    <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/80 transition-colors">
+                        <td class="p-4 font-bold text-slate-800 dark:text-white whitespace-nowrap">${dia.fecha.label}</td>
+                        <td class="p-4">
+                            <span class="text-xs font-bold px-2 py-1 rounded ${dia.fecha.tipo === 'VMC' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'}">${dia.fecha.tipo}</span>
+                        </td>
+                        ${cellFormat(asig["Plataforma"])}
+                        ${cellFormat(asig["Audio"])}
+                        ${cellFormat(asig["Video"])}
+                        ${cellFormat(asig["Micrófono A"])}
+                        ${cellFormat(asig["Micrófono B"])}
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table></div>`;
+
+            html += `
+                <div class="bg-slate-50 dark:bg-slate-900/50 p-4 border-t border-slate-200 dark:border-slate-700 flex justify-end">
+                    <button onclick="window.print()" class="bg-slate-800 dark:bg-slate-700 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-slate-700 dark:hover:bg-slate-600 transition shadow-md flex items-center gap-2 focus:ring-4 focus:ring-slate-200 dark:focus:ring-slate-800">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" /></svg>
+                        Exportar PDF / Imprimir
+                    </button>
+                </div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+            container.classList.remove('p-4', 'border-dashed'); // Limpiar estilos de estado vacío
+        }
+    </script>
 </body>
+
 </html>
-
-
-<!-- DEFINICIONES -->
-    <!-- CDN = Red de entrega de contenido, un sistema de servidores distribuidos que entrega contenido web a los usuarios de manera más rápida y eficiente. -->
-    <!-- CORS = Cross-Origin Resource Sharing, un mecanismo que permite a los recursos restringidos en una página web ser solicitados desde otro dominio distinto al que sirvió el recurso inicial. -->
-    <!-- Flexbox = Un modelo de diseño en CSS que permite distribuir espacio entre los elementos de una interfaz y alinear contenido de manera predecible, incluso cuando su tamaño es desconocido o dinámico. -->
